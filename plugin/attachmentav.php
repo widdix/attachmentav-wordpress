@@ -77,13 +77,5 @@ function run_attachmentav() {
 	$plugin = new Attachmentav();
 	$plugin->run();
 
-	// function attachmentav_add_action_links( $links ) {
-	// 	$settings_link = '&lt;a href=&quot;options-general.php?page=plugin_name&quot;&gt;' . __( 'Settings' ) . '&lt;/a&gt;';
-	// 	array_push( $links, $settings_link );
-	// 	return $links;
-	// }
-	// add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'attachmentav_add_action_links' );
-	// error_log( print_r(  plugin_basename(__FILE__), true ) );
-
 }
 run_attachmentav();
