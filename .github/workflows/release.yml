@@ -20,8 +20,7 @@ jobs:
         cd plugin
         zip -r ../attachmentav.zip .
         cd ..
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    - name: Create release including artifact
+      uses: softprops/action-gh-release@v2
       with:
-        name: attachmentav
-        path: attachmentav.zip
+        files: attachmentav.zip
