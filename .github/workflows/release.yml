@@ -1,0 +1,26 @@
+---
+name: release
+on:
+  push:
+    tags:        
+    - 'v*'
+permissions:
+  id-token: write
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  release:
+    runs-on: ['hyperenv', 'medium']
+    steps:
+    - name: Create ZIP
+      run: |
+        cd plugin
+        zip -r ../attachmentav.zip .
+        cd ..
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: attachmentav
+        path: attachmentav.zip
