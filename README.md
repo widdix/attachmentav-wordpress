@@ -12,7 +12,9 @@ The Wordpress plugin scans uploads for viruses, trojans, and other kinds of malw
 
 ## Installation
 
-1. Download `attachment.zip` from [latest release](https://github.com/widdix/attachmentav-wordpress/releases/latest).
+> [Looking for more detailed installation instructions?](https://attachmentav.com/help/setup-guide/wordpress.html)
+
+1. Download `attachment.zip` of [latest release](https://github.com/widdix/attachmentav-wordpress/releases/latest/download/attachmentav.zip).
 1. Open the admin area of your WordPress site.
 1. Go to `Plugins` and press the `Add New Plugin` button.
 1. Click the `Upload Plugin` button and select the `attachment.zip` file that you downloaded previously.
