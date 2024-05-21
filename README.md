@@ -1,4 +1,4 @@
-# attachmentAV for Wordpress - Protect blog from malware
+# attachmentAV for Wordpress - Protect blog from viruses, trojans, and other kinds of malware.
 
 Protect your blog from viruses, trojans, and other kinds of malware. The plugin sends all uploads to the attachmentAV API to scan for malware with Sophos and blocks infected files.
 
