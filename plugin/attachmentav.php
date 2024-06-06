@@ -40,7 +40,7 @@ define( 'ATTACHMENTAV_VERSION', '1.0.0' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-attachmentav-activator.php
  */
-function activate_attachmentav() {
+function attachmentav_activate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-attachmentav-activator.php';
 	Attachmentav_Activator::activate();
 }
@@ -49,13 +49,13 @@ function activate_attachmentav() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-attachmentav-deactivator.php
  */
-function deactivate_attachmentav() {
+function attachmentav_deactivate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-attachmentav-deactivator.php';
 	Attachmentav_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_attachmentav' );
-register_deactivation_hook( __FILE__, 'deactivate_attachmentav' );
+register_activation_hook( __FILE__, 'attachmentav_activate' );
+register_deactivation_hook( __FILE__, 'attachmentav_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -72,10 +72,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-attachmentav.php';
  *
  * @since    1.0.0
  */
-function run_attachmentav() {
+function attachmentav_run() {
 
 	$plugin = new Attachmentav();
 	$plugin->run();
 
 }
-run_attachmentav();
+attachmentav_run();

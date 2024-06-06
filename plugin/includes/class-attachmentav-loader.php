@@ -173,7 +173,7 @@ class Attachmentav_Loader {
 
 		function attachmentav_add_action_links( $links ) {
 			$url = get_admin_url() . "options-general.php?page=attachmentav";
-			$settings_link = '<a href="' . $url . '">' . __('Settings', 'textdomain') . '</a>';
+			$settings_link = '<a href="' . $url . '">' . __('Settings', 'attachmentav') . '</a>';
 			array_unshift($links, $settings_link);
 			return $links;
 		}

@@ -18,7 +18,7 @@ The plugin protects your blog from malware like viruses, worms, and tronjans.
 3. The attachmentAV API scans the file for malware by using the Sophos engine.
 4. In case of an infected file, the plugin blocks the upload.
 
-An API key and subscription is required to access the attachmentAV API.
+An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) is required. In order to scan user uploads for malware the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary`.
 
 == Installation ==
 
