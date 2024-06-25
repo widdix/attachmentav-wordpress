@@ -31,6 +31,4 @@ jobs:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SLUG: attachmentav
         BUILD_DIR: plugin
-      with:
-        dry-run: true
         
