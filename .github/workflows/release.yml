@@ -12,7 +12,7 @@ defaults:
     shell: bash
 jobs:
   release:
-    runs-on: ['hyperenv', 'medium']
+    runs-on: ['hyperenv', 'small']
     steps:
     - uses: actions/checkout@v4
     - name: Create ZIP
