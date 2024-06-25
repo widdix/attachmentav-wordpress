@@ -24,13 +24,5 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: attachmentav.zip
-    - name: Deploy to Wordpress Plugin Directory
-      uses: 10up/action-wordpress-plugin-deploy@stable
-      env:
-        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-        SLUG: attachmentav
-        BUILD_DIR: plugin
-      with:
-        dry-run: true
+    
         
