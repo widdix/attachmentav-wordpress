@@ -2,6 +2,9 @@ name: listing
 on: 
   push:
     branches: ['main']
+    paths:
+    - 'plugin/README.txt'
+    - '.wordpress-org/**'
 jobs:
   trunk:
     name: listing
@@ -13,3 +16,5 @@ jobs:
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SLUG: attachmentav
+        IGNORE_OTHER_FILES: true
+        BUILD_DIR: plugin
