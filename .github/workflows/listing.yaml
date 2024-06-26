@@ -3,6 +3,7 @@ on:
   push:
     branches: ['main']
     paths:
+    - '.github/workflows/listing.yaml'
     - 'plugin/README.txt'
     - '.wordpress-org/**'
 jobs:
