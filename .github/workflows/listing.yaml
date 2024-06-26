@@ -1,0 +1,14 @@
+name: listing
+on: 
+  push:
+    branches: ['main']
+jobs:
+  trunk:
+    name: listing
+    runs-on: ['hyperenv', 'small']
+    steps:
+    - uses: actions/checkout@master
+    - uses: 10up/action-wordpress-plugin-asset-update@stable
+      env:
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}

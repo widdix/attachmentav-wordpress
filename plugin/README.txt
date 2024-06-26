@@ -27,6 +27,8 @@ An API key and subscription for the 3rd party service [attachmentAV](https://att
 * Open the attachmentAV plugin settings tab.
 * Create a subscription for the attachmentAV API and enter the API key.
 
+Go to [attachmentAV for WordPress Setup Guide](https://attachmentav.com/help/setup-guide/wordpress.html) for more detailed setup instructions.
+
 == Frequently Asked Questions ==
 
 = Which file types are supported? =

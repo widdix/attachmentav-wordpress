@@ -27,7 +27,7 @@ services:
       - WORDPRESS_DB_NAME=wordpress
       - WORDPRESS_DEBUG=true
     volumes:
-      - ./plugin:/var/www/html/wp-content/plugins/attachmentav
+      # - ./plugin:/var/www/html/wp-content/plugins/attachmentav
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
 volumes:
   db_data:
