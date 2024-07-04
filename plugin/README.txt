@@ -2,8 +2,8 @@
 Contributors: andreaswittig
 Tags: malware,virus,upload,attachment,antivirus
 Requires at least: 6.0
-Tested up to: 6.5.2
-Stable tag: 1.0.2
+Tested up to: 6.6
+Stable tag: 1.0.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
