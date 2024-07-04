@@ -3,7 +3,7 @@ Contributors: andreaswittig
 Tags: malware,virus,upload,attachment,antivirus
 Requires at least: 6.0
 Tested up to: 6.6
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,3 +43,15 @@ attachmentAV scans all file types. The maximum file size is 10 MB.
 
 = 1.0 =
 * Initial Release
+
+= 1.0.1 =
+* Small fixes
+
+= 1.0.2 =
+* Small fixes
+
+= 1.0.3 =
+* Small fixes
+
+= 1.0.4 =
+* Small fixes
