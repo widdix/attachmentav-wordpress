@@ -1,6 +1,6 @@
 === attachmentAV ===
 Contributors: andreaswittig
-Tags: malware,virus,upload,attachment,antivirus
+Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
 Tested up to: 6.6
 Stable tag: 1.0.4
