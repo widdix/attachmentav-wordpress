@@ -169,7 +169,7 @@ class Attachmentav_Loader {
 			}
 			return $file;
 		}
-		add_filter( 'wp_handle_upload_prefilter', 'attachmentav_upload_prefilter' );
+		add_filter( 'wp_handle_upload_prefilter', 'attachmentav_upload_prefilter');
 
 		function attachmentav_add_action_links( $links ) {
 			$url = get_admin_url() . "options-general.php?page=attachmentav";
@@ -178,6 +178,50 @@ class Attachmentav_Loader {
 			return $links;
 		}
 		add_filter( 'plugin_action_links_attachmentav/attachmentav.php', 'attachmentav_add_action_links' );
+
+		function modify_media_meta($media_dims, $post) {
+			$scanResult = get_post_meta( $post->ID, 'attachmentav_scan_result', true );
+			$media_dims .= "<div><strong>attachmentAV Scan Result:</strong> $scanResult</div>";
+			return $media_dims;
+		}
+		add_filter('media_meta', "modify_media_meta", null, 2);
+
+		function scan_attachment($post_id) {
+    		$attachment_url = wp_get_attachment_url( $post_id );
+			$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/download';
+			$args = array(
+				'timeout' => 30,
+				'body'    => '{"download_url":"' . $attachment_url . '"}',
+				'headers' => array(
+					'x-api-key' => get_option('attachmentav_api_key'),
+					'x-wordpress-site-url' => get_site_url(),
+					'Content-Type' => 'application/json',
+				),
+			);
+			error_log(implode(',', $args));
+			$response = wp_remote_post( $endpoint, $args);
+			if (is_wp_error($response)) {
+				add_post_meta($post_id, 'attachmentav_scan_result', 'error:client');
+			} else {
+				if ($response['response']['code'] == 200) {
+					$body = json_decode($response['body'], true);
+					add_post_meta($post_id, 'attachmentav_scan_result', $body['status']);
+					if (array_key_exists('finding', $body)) {
+						add_post_meta($post_id, 'attachmentav_scan_finding', $body['finding']);
+					}
+				} else {
+					if ($response['response']['code'] == 401) {
+						add_post_meta($post_id, 'attachmentav_scan_result', 'error:license_key_missing');
+					} else if ($response['response']['code'] == 429) {
+						add_post_meta($post_id, 'attachmentav_scan_result', 'error:max_scans_reached');
+					} else {
+						add_post_meta($post_id, 'attachmentav_scan_result', 'error:server');
+					}
+				}
+			}
+			add_post_meta($post_id, 'attachmentav_scan_result', 'CLEAN');
+		}
+		add_action("add_attachment", 'scan_attachment');
 	}
 
 }
