@@ -22,3 +22,17 @@ The Wordpress plugin scans uploads for viruses, trojans, and other kinds of malw
 ## Help and Feedback
 
 Please contact [hello@attachmentav.com](mailto:hello@attachmentav.com) in case you need help or want to leave feedback. Alternatively, open an issue or send a PR.
+
+## Development
+
+Use the following command to spin up a development environment.
+
+```
+docker compose up
+```
+
+Optionally use `ngrok` to get a publicly reachable development domain.
+
+```
+ngrok http http://localhost:80
+```
