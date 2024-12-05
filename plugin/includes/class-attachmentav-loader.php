@@ -217,11 +217,11 @@ class Attachmentav_Loader {
 		}
 		add_action('add_attachment', 'scan_attachment');
 
-		function wpforms_scan_file($url) {
+		function wpforms_scan_file($file) {
 			$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/download';
 			$args = array(
 				'timeout' => 30,
-				'body'    => '{"download_url":"' . $url . '"}',
+				'body'    => '{"download_url":"' . $file['value'] . '"}',
 				'headers' => array(
 					'x-api-key' => get_option('attachmentav_api_key'),
 					'x-wordpress-site-url' => get_site_url(),
@@ -230,7 +230,7 @@ class Attachmentav_Loader {
 			);
 			$response = wp_remote_post( $endpoint, $args);
 			if (is_wp_error($response)) {
-				add_post_meta($post_id, 'attachmentav_scan_result', 'error:client');
+				return array('status' => 'error:client');
 			} else {
 				if ($response['response']['code'] == 200) {
 					return json_decode($response['body'], true);
@@ -243,18 +243,18 @@ class Attachmentav_Loader {
 				}
 			}
 		}
-		function wpforms_status2error($ret) {
+		function wpforms_status2error($filename, $ret) {
 			if ($ret['status'] == 'infected') {
 				if (!empty($ret['finding'])) {
-					return 'The file you uploaded is infected and therfore blocked (' . $ret['finding'] . ').';
+					return 'The file ' . $filename . ' is infected and therefore blocked (' . $ret['finding'] . ')';
 				} else {
-					return 'The file you uploaded is infected and therfore blocked.';
+					return 'The file ' . $filename . ' is infected and therefore blocked';
 				}
 			} else if ($ret['status'] == 'no') {
 				if (!empty($ret['finding'])) {
-					return 'The file you uploaded is not scannable and therfore blocked (' . $ret['finding'] . ').';
+					return 'The file ' . $filename . ' is not scannable and therefore blocked (' . $ret['finding'] . ')';
 				} else {
-					return 'The file you uploaded is not scannable and therfore blocked.';
+					return 'The file ' . $filename . ' is not scannable and therefore blocked';
 				}
 			} else {
 				return $ret['status'];
@@ -263,23 +263,29 @@ class Attachmentav_Loader {
 		function wpforms_process_entry_save($fields, $entry, $form_id, $form_data) {
 			foreach ($fields as $i => $field) {
 				if ($field['type'] == 'file-upload') {
-					if(!empty($field['value'])) { 
-						$ret = wpforms_scan_file($field['value']);
-						if ($ret['status'] == 'no') {
-							if (get_option('attachmentav_block_unscannable') == 'true') {
-								wpforms()->process->errors[$form_data['id']][$i] = wpforms_status2error($ret);
+					if(!empty($field['value_raw'])) { 
+						$errors = [];
+						foreach($field['value_raw'] as $file) {
+							$ret = wpforms_scan_file($file);
+							if ($ret['status'] == 'no') {
+								if (get_option('attachmentav_block_unscannable') == 'true') {
+									$errors[] = wpforms_status2error($file['file_user_name'], $ret);
+								}
+							} else if ($ret['status'] == 'clean') {
+								// continue
+							} else {
+								$errors[] = wpforms_status2error($file['file_user_name'], $ret);
 							}
-						} else if ($ret['status'] == 'clean') {
-							// continue
-						} else {
-							wpforms()->process->errors[$form_data['id']][$i] = wpforms_status2error($ret);
+						}
+						if (count($errors) > 0) {
+							wpforms()->process->errors[$form_data['id']][$i] = implode('; ', $errors);
 						}
 					}
 				}
 			}
 			return $fields;
 		}
-		add_action( 'wpforms_process_entry_save', 'wpforms_process_entry_save', 10, 4 );
+		add_action('wpforms_process_entry_save', 'wpforms_process_entry_save', 10, 4);
 	}
 
 }
