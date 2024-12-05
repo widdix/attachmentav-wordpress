@@ -263,8 +263,8 @@ class Attachmentav_Loader {
 		function wpforms_process_entry_save($fields, $entry, $form_id, $form_data) {
 			foreach ($fields as $i => $field) {
 				if ($field['type'] == 'file-upload') {
-					if(!empty($field['value_raw'])) { 
-						$errors = [];
+					$errors = [];
+					if(!empty($field['value_raw'])) { // style modern
 						foreach($field['value_raw'] as $file) {
 							$ret = wpforms_scan_file($file);
 							if ($ret['status'] == 'no') {
@@ -277,9 +277,20 @@ class Attachmentav_Loader {
 								$errors[] = wpforms_status2error($file['file_user_name'], $ret);
 							}
 						}
-						if (count($errors) > 0) {
-							wpforms()->process->errors[$form_data['id']][$i] = implode('; ', $errors);
+					} else if(!empty($field['value'])) { // style classic
+						$ret = wpforms_scan_file($field);
+						if ($ret['status'] == 'no') {
+							if (get_option('attachmentav_block_unscannable') == 'true') {
+								$errors[] = wpforms_status2error($field['file_user_name'], $ret);
+							}
+						} else if ($ret['status'] == 'clean') {
+							// continue
+						} else {
+							$errors[] = wpforms_status2error($field['file_user_name'], $ret);
 						}
+					}
+					if (count($errors) > 0) {
+						wpforms()->process->errors[$form_data['id']][$i] = implode('; ', $errors);
 					}
 				}
 			}
