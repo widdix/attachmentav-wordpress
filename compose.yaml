@@ -30,5 +30,13 @@ services:
       - ./plugin:/var/www/html/wp-content/plugins/attachmentav
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./error-logging.ini:/usr/local/etc/php/conf.d/error-logging.ini
+  phpmyadmin:
+    image: 'phpmyadmin:5.2.1'
+    ports:
+    - '8081:80'
+    depends_on:
+    - db
+    environment:
+      PMA_HOST: db
 volumes:
   db_data:

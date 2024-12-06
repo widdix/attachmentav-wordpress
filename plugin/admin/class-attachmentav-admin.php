@@ -54,143 +54,187 @@ class Attachmentav_Admin {
 
 		
 		add_action('admin_menu', array($this, 'add_plugin_page'));
-        add_action('admin_init', array($this, 'page_init'));
+		add_action('admin_init', array($this, 'page_init'));
 		
 
 	}
 
 	/**
-     * Add options page
-     */
-    public function add_plugin_page() {
-        add_options_page(
-            'attachmentAV Settings', 
-            'attachmentAV', 
-            'manage_options', 
-            'attachmentav', 
-            array( $this, 'create_admin_page' )
-        );
-    }
+	 * Add options page
+	 */
+	public function add_plugin_page() {
+		add_options_page(
+			'attachmentAV Settings', 
+			'attachmentAV', 
+			'manage_options', 
+			'attachmentav', 
+			array( $this, 'create_admin_page' )
+		);
+	}
 
-    /**
-     * Options page callback
-     */
-    public function create_admin_page() {
-        ?>
-        <div class="wrap">
-            <h1>attachmentAV Settings</h1>
-            <form method="post" action="options.php">
-            <?php
-                // This prints out all hidden setting fields
-                settings_fields( 'attachmentav' );
-                do_settings_sections( 'attachmentav' );
-                submit_button();
-            ?>
-            </form>
-        </div>
-        <?php
-    }
+	/**
+	 * Options page callback
+	 */
+	public function create_admin_page() {
+		?>
+		<div class="wrap">
+			<h1>attachmentAV Settings</h1>
+			<form method="post" action="options.php">
+			<?php
+				// This prints out all hidden setting fields
+				settings_fields( 'attachmentav' );
+				do_settings_sections( 'attachmentav' );
+				submit_button();
+			?>
+			</form>
+		</div>
+		<?php
+	}
 
-    /**
-     * Register and add settings
-     */
-    public function page_init() {        
-        register_setting(
-            'attachmentav', // Option group
-            'attachmentav_api_key', // Option name
-            array( $this, 'sanitize_text' ) // Sanitize
-        );
+	/**
+	 * Register and add settings
+	 */
+	public function page_init() {        
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_api_key', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
 
 		register_setting(
-            'attachmentav', // Option group
-            'attachmentav_block_unscannable', // Option name
-            array( $this, 'sanitize_text' ) // Sanitize
-        );
+			'attachmentav', // Option group
+			'attachmentav_block_unscannable', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
 
-        add_settings_section(
-            'attachmentav_subscription', // ID
-            'Subscription', // Title
-            array( $this, 'print_subscription_section' ), // Callback
-            'attachmentav' // Page
-        );  
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_scan_wpforms', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
 
-        add_settings_field(
-            'attachmentav_api_key', // ID
-            'API Key', // Title 
-            array( $this, 'print_api_key' ), // Callback
-            'attachmentav', // Page
-            'attachmentav_subscription' // Section           
-        );
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_scan_wpfileupload', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
 
-        add_settings_section(
-            'attachmentav_general', // ID
-            'General', // Title
-            array( $this, 'print_general_section' ), // Callback
-            'attachmentav' // Page
-        ); 
+		add_settings_section(
+			'attachmentav_subscription', // ID
+			'Subscription', // Title
+			array( $this, 'print_subscription_section' ), // Callback
+			'attachmentav' // Page
+		);  
 
 		add_settings_field(
-            'attachmentav_block_unscannable', // ID
-            'Block unscannable files?', // Title 
-            array( $this, 'print_block_unscannable' ), // Callback
-            'attachmentav', // Page
-            'attachmentav_general' // Section           
-        );
-    }
+			'attachmentav_api_key', // ID
+			'API Key', // Title 
+			array( $this, 'print_api_key' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_subscription' // Section           
+		);
 
-    /**
-     * Sanitize each setting field as needed
-     *
-     * @param array $input Contains all settings fields as array keys
-     */
-    public function sanitize_text( $input ) {
+		add_settings_section(
+			'attachmentav_general', // ID
+			'General', // Title
+			array( $this, 'print_general_section' ), // Callback
+			'attachmentav' // Page
+		); 
+
+		add_settings_field(
+			'attachmentav_block_unscannable', // ID
+			'Block unscannable files?', // Title 
+			array( $this, 'print_block_unscannable' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_general' // Section           
+		);
+
+		add_settings_field(
+			'attachmentav_scan_wpforms', // ID
+			'Scan files uploaded with plugin "WPForms"?', // Title 
+			array( $this, 'print_block_scan_wpforms' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_general' // Section           
+		);
+
+		add_settings_field(
+			'attachmentav_scan_wpfileupload', // ID
+			'Scan files uploaded with plugin "WordPress File Upload"?', // Title 
+			array( $this, 'print_block_scan_wpfileupload' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_general' // Section           
+		);
+	}
+
+	/**
+	 * Sanitize each setting field as needed
+	 *
+	 * @param array $input Contains all settings fields as array keys
+	 */
+	public function sanitize_text( $input ) {
 		return sanitize_text_field($input);
-    }
+	}
 
-    /** 
-     * Print the Section text
-     */
-    public function print_subscription_section()
-    {
-        print '<a target="_blank" href="https://attachmentav.com/subscribe/wordpress/">Subscribe to attachmentAV</a> and enter the API key below.';
-    }
+	/** 
+	 * Print the Section text
+	 */
+	public function print_subscription_section()
+	{
+		print '<a target="_blank" href="https://attachmentav.com/subscribe/wordpress/">Subscribe to attachmentAV</a> and enter the API key below.';
+	}
 
-    /** 
-     * Print the Section text
-     */
-    public function print_general_section()
-    {
-        print 'Enter your settings below:';
-    }
+	/** 
+	 * Print the Section text
+	 */
+	public function print_general_section()
+	{
+		print 'Enter your settings below:';
+	}
 
-    /** 
-     * Get the settings option array and print one of its values
-     */
-    public function print_api_key() {
+	/** 
+	 * Get the settings option array and print one of its values
+	 */
+	public function print_api_key() {
 			printf(
 				'<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
 			);
 		
-    }
+	}
 
 	public function print_block_unscannable() {
 		if (get_option('attachmentav_block_unscannable') == 'true') {
 			print('<select name="attachmentav_block_unscannable"><option value="true" selected>Yes</option><option value="false">No</option></select>');
 		} else {
 			print('<select name="attachmentav_block_unscannable"><option value="true">Yes</option><option value="false" selected>No</option></select>');
-		}	
+		}   
 	}
 
-    /** 
-     * Get the settings option array and print one of its values
-     */
-    public function title_callback()
-    {
-        printf(
-            '<input type="text" id="title" name="my_option_name[title]" value="%s" />',
-            isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
-        );
-    }
+	public function print_block_scan_wpforms() {
+		if (get_option('attachmentav_scan_wpforms') != 'false') {
+			print('<select name="attachmentav_scan_wpforms"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+		} else {
+			print('<select name="attachmentav_scan_wpforms"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+		}   
+	}
+
+	public function print_block_scan_wpfileupload() {
+		if (get_option('attachmentav_scan_wpfileupload') != 'false') {
+			print('<select name="attachmentav_scan_wpfileupload"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+		} else {
+			print('<select name="attachmentav_scan_wpfileupload"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+		}
+	}
+
+	/** 
+	 * Get the settings option array and print one of its values
+	 */
+	public function title_callback()
+	{
+		printf(
+			'<input type="text" id="title" name="my_option_name[title]" value="%s" />',
+			isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
+		);
+	}
 	
 	
 
