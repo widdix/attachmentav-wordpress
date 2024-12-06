@@ -36,3 +36,5 @@ Optionally use `ngrok` to get a publicly reachable development domain.
 ```
 ngrok http http://localhost:80
 ```
+
+Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to print debug logs.
