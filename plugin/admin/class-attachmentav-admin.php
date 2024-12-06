@@ -22,44 +22,44 @@
  */
 class Attachmentav_Admin {
 
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
+    /**
+     * The ID of this plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $plugin_name    The ID of this plugin.
+     */
+    private $plugin_name;
 
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
+    /**
+     * The version of this plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
+    private $version;
 
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
-	 */
-	public function __construct( $plugin_name, $version ) {
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @since    1.0.0
+     * @param      string    $plugin_name       The name of this plugin.
+     * @param      string    $version    The version of this plugin.
+     */
+    public function __construct( $plugin_name, $version ) {
 
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+        $this->plugin_name = $plugin_name;
+        $this->version = $version;
 
-		
-		add_action('admin_menu', array($this, 'add_plugin_page'));
+        
+        add_action('admin_menu', array($this, 'add_plugin_page'));
         add_action('admin_init', array($this, 'page_init'));
-		
+        
 
-	}
+    }
 
-	/**
+    /**
      * Add options page
      */
     public function add_plugin_page() {
@@ -101,9 +101,21 @@ class Attachmentav_Admin {
             array( $this, 'sanitize_text' ) // Sanitize
         );
 
-		register_setting(
+        register_setting(
             'attachmentav', // Option group
             'attachmentav_block_unscannable', // Option name
+            array( $this, 'sanitize_text' ) // Sanitize
+        );
+
+        register_setting(
+            'attachmentav', // Option group
+            'attachmentav_scan_wpforms', // Option name
+            array( $this, 'sanitize_text' ) // Sanitize
+        );
+
+        register_setting(
+            'attachmentav', // Option group
+            'attachmentav_scan_wpfileupload', // Option name
             array( $this, 'sanitize_text' ) // Sanitize
         );
 
@@ -129,10 +141,26 @@ class Attachmentav_Admin {
             'attachmentav' // Page
         ); 
 
-		add_settings_field(
+        add_settings_field(
             'attachmentav_block_unscannable', // ID
             'Block unscannable files?', // Title 
             array( $this, 'print_block_unscannable' ), // Callback
+            'attachmentav', // Page
+            'attachmentav_general' // Section           
+        );
+
+        add_settings_field(
+            'attachmentav_scan_wpforms', // ID
+            'Scan files uploaded with plugin "WPForms"?', // Title 
+            array( $this, 'print_block_scan_wpforms' ), // Callback
+            'attachmentav', // Page
+            'attachmentav_general' // Section           
+        );
+
+        add_settings_field(
+            'attachmentav_scan_wpfileupload', // ID
+            'Scan files uploaded with plugin "WordPress File Upload"?', // Title 
+            array( $this, 'print_block_scan_wpfileupload' ), // Callback
             'attachmentav', // Page
             'attachmentav_general' // Section           
         );
@@ -144,7 +172,7 @@ class Attachmentav_Admin {
      * @param array $input Contains all settings fields as array keys
      */
     public function sanitize_text( $input ) {
-		return sanitize_text_field($input);
+        return sanitize_text_field($input);
     }
 
     /** 
@@ -167,19 +195,35 @@ class Attachmentav_Admin {
      * Get the settings option array and print one of its values
      */
     public function print_api_key() {
-			printf(
-				'<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
-			);
-		
+            printf(
+                '<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
+            );
+        
     }
 
-	public function print_block_unscannable() {
-		if (get_option('attachmentav_block_unscannable') == 'true') {
-			print('<select name="attachmentav_block_unscannable"><option value="true" selected>Yes</option><option value="false">No</option></select>');
-		} else {
-			print('<select name="attachmentav_block_unscannable"><option value="true">Yes</option><option value="false" selected>No</option></select>');
-		}	
-	}
+    public function print_block_unscannable() {
+        if (get_option('attachmentav_block_unscannable') == 'true') {
+            print('<select name="attachmentav_block_unscannable"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+        } else {
+            print('<select name="attachmentav_block_unscannable"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+        }   
+    }
+
+    public function print_block_scan_wpforms() {
+        if (get_option('attachmentav_scan_wpforms') != 'false') {
+            print('<select name="attachmentav_scan_wpforms"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+        } else {
+            print('<select name="attachmentav_scan_wpforms"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+        }   
+    }
+
+    public function print_block_scan_wpfileupload() {
+        if (get_option('attachmentav_scan_wpfileupload') != 'false') {
+            print('<select name="attachmentav_scan_wpfileupload"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+        } else {
+            print('<select name="attachmentav_scan_wpfileupload"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+        }
+    }
 
     /** 
      * Get the settings option array and print one of its values
@@ -191,53 +235,53 @@ class Attachmentav_Admin {
             isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
         );
     }
-	
-	
+    
+    
 
-	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
+    /**
+     * Register the stylesheets for the admin area.
+     *
+     * @since    1.0.0
+     */
+    public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Attachmentav_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Attachmentav_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+        /**
+         * This function is provided for demonstration purposes only.
+         *
+         * An instance of this class should be passed to the run() function
+         * defined in Attachmentav_Loader as all of the hooks are defined
+         * in that particular class.
+         *
+         * The Attachmentav_Loader will then create the relationship
+         * between the defined hooks and the functions defined in this
+         * class.
+         */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/attachmentav-admin.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/attachmentav-admin.css', array(), $this->version, 'all' );
 
-	}
+    }
 
-	/**
-	 * Register the JavaScript for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
+    /**
+     * Register the JavaScript for the admin area.
+     *
+     * @since    1.0.0
+     */
+    public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Attachmentav_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Attachmentav_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+        /**
+         * This function is provided for demonstration purposes only.
+         *
+         * An instance of this class should be passed to the run() function
+         * defined in Attachmentav_Loader as all of the hooks are defined
+         * in that particular class.
+         *
+         * The Attachmentav_Loader will then create the relationship
+         * between the defined hooks and the functions defined in this
+         * class.
+         */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/attachmentav-admin.js', array( 'jquery' ), $this->version, false );
+        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/attachmentav-admin.js', array( 'jquery' ), $this->version, false );
 
-	}
+    }
 
 }
