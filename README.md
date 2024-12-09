@@ -41,10 +41,13 @@ Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to
 
 ### Release
 
-* In `plugin/README.md`, update:
-  * `Stable tag`
-  * add an item to `Changelog`
-* In `plugin/attachmentav.php`, update the `ATTACHMENTAV_VERSION` constant.
+* Modify `plugin/README.md`
+  * Update `Stable tag`
+  * Add an item to `Changelog`
+* Modify `plugin/attachmentav.php`
+  * Update the `ATTACHMENTAV_VERSION` constant
+  * Update `Version` (line 19)
+  
 * Commit changes.
 * Add and push tag:
 ```
