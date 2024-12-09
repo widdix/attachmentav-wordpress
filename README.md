@@ -37,4 +37,19 @@ Optionally use `ngrok` to get a publicly reachable development domain.
 ngrok http http://localhost:80
 ```
 
+<<<<<<< Updated upstream
 Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to print debug logs.
+=======
+### Release
+
+Update the `Stable tag` and add an item for the release notes in `plugin/README.md`.
+
+Add and push tag.
+
+```
+git tag -a v1.0.5 -m "v1.0.5"
+git push origin main --tags
+```
+
+The workflow `release` will synchronize the repository with the WordPress SVN to publish the release.
+>>>>>>> Stashed changes

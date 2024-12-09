@@ -1,4 +1,4 @@
-=== attachmentAV ===
+=== attachmentAV - Antivirus for WordPress ===
 Contributors: andreaswittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
