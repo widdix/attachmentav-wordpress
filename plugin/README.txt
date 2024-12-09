@@ -3,7 +3,7 @@ Contributors: andreaswittig,michaelwittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
 Tested up to: 6.7.1
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ The plugin protects your blog from malware like viruses, worms, and trojans.
 3. The attachmentAV API scans the file for malware by using the Sophos engine.
 4. In the case of an infected file, the plugin blocks the upload.
 
-Also works with the popular file upload plugins [WPForms](https://wpforms.com/) and [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/).
+Also works with the popular file upload plugins [WPForms](https://wpforms.com/), [Formidable Forms](https://formidableforms.com/) and [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/).
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary` or `https://eu.developer.attachmentav.com/v1/scan/sync/download`.
 
@@ -43,6 +43,7 @@ attachmentAV scans all files uploaded via:
 
 * The core [Media Library](https://wordpress.com/support/media/)
 * The plugin [WPForms](https://wpforms.com/)
+* The plugin [Formidable Forms](https://formidableforms.com/)
 * The plugin [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/)
 
 == Screenshots ==
@@ -51,6 +52,9 @@ attachmentAV scans all files uploaded via:
 2. attachmentAV scan status shown for each media file.
 
 == Changelog ==
+
+= 1.2.0 =
+* Support for plugin Formidable Forms added
 
 = 1.1.2 =
 * Small fixes
