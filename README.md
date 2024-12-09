@@ -41,10 +41,12 @@ Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to
 
 ### Release
 
-Update the `Stable tag` and add an item for the release notes in `plugin/README.md`.
-
-Add and push tag.
-
+* In `plugin/README.md`, update:
+  * `Stable tag`
+  * add an item to `Changelog`
+* In `plugin/attachmentav.php`, update the `ATTACHMENTAV_VERSION` constant.
+* Commit changes.
+* Add and push tag:
 ```
 git tag -a v1.0.5 -m "v1.0.5"
 git push origin main --tags
