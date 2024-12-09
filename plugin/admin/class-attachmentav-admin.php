@@ -149,12 +149,19 @@ class Attachmentav_Admin {
 			'attachmentav_general' // Section           
 		);
 
+		add_settings_section(
+			'attachmentav_plugins', // ID
+			'Plugins', // Title
+			array( $this, 'print_plugins_section' ), // Callback
+			'attachmentav' // Page
+		); 
+
 		add_settings_field(
 			'attachmentav_scan_wpforms', // ID
 			'Scan files uploaded with plugin "WPForms"?', // Title 
 			array( $this, 'print_block_scan_wpforms' ), // Callback
 			'attachmentav', // Page
-			'attachmentav_general' // Section           
+			'attachmentav_plugins' // Section           
 		);
 
 		add_settings_field(
@@ -162,7 +169,15 @@ class Attachmentav_Admin {
 			'Scan files uploaded with plugin "WordPress File Upload"?', // Title 
 			array( $this, 'print_block_scan_wpfileupload' ), // Callback
 			'attachmentav', // Page
-			'attachmentav_general' // Section           
+			'attachmentav_plugins' // Section           
+		);
+
+		add_settings_field(
+			'attachmentav_scan_formidable', // ID
+			'Scan files uploaded with plugin "Formidable Forms"?', // Title 
+			array( $this, 'print_block_scan_formidable' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_plugins' // Section           
 		);
 	}
 
@@ -175,25 +190,21 @@ class Attachmentav_Admin {
 		return sanitize_text_field($input);
 	}
 
-	/** 
-	 * Print the Section text
-	 */
 	public function print_subscription_section()
 	{
 		print '<a target="_blank" href="https://attachmentav.com/subscribe/wordpress/">Subscribe to attachmentAV</a> and enter the API key below.';
 	}
 
-	/** 
-	 * Print the Section text
-	 */
 	public function print_general_section()
 	{
 		print 'Enter your settings below:';
 	}
 
-	/** 
-	 * Get the settings option array and print one of its values
-	 */
+	public function print_plugins_section()
+	{
+		print 'attachmentAV scans files uploaded via the following plugins as well:';
+	}
+
 	public function print_api_key() {
 			printf(
 				'<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
@@ -223,6 +234,10 @@ class Attachmentav_Admin {
 		} else {
 			print('<select name="attachmentav_scan_wpfileupload"><option value="true">Yes</option><option value="false" selected>No</option></select>');
 		}
+	}
+
+	public function print_block_scan_formidable() {
+		print('Always active');
 	}
 
 	/** 
