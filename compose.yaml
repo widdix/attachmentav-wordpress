@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.6.4-focal
+    image: mariadb:10.8.2-focal
     command: '--default-authentication-plugin=mysql_native_password'
     volumes:
       - db_data:/var/lib/mysql
@@ -31,7 +31,7 @@ services:
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./error-logging.ini:/usr/local/etc/php/conf.d/error-logging.ini
   phpmyadmin:
-    image: 'phpmyadmin:5.2.1'
+    image: 'phpmyadmin:5.2.2'
     ports:
     - '8081:80'
     depends_on:
