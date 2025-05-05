@@ -2,7 +2,7 @@
 Contributors: andreaswittig,michaelwittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
-Tested up to: 6.7.1
+Tested up to: 6.8
 Stable tag: 1.2.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
