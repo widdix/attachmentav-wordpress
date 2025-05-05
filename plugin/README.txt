@@ -3,7 +3,7 @@ Contributors: andreaswittig,michaelwittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.2.1
+Stable tag: 1.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,9 @@ attachmentAV scans all files uploaded via:
 2. attachmentAV scan status shown for each media file.
 
 == Changelog ==
+
+= 1.3.0 =
+* Support Wordpress 6.8
 
 = 1.2.1 =
 * Minor fixes
