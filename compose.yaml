@@ -33,9 +33,9 @@ services:
   phpmyadmin:
     image: 'phpmyadmin:5.2.2'
     ports:
-    - '8081:80'
+      - '8081:80'
     depends_on:
-    - db
+      - db
     environment:
       PMA_HOST: db
 volumes:
