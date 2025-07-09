@@ -25,10 +25,29 @@ Please contact [hello@attachmentav.com](mailto:hello@attachmentav.com) in case y
 
 ## Development
 
+To clear the database, run:
+
+```
+docker compose down --volumes
+```
+
 Use the following command to spin up a development environment.
 
 ```
 docker compose up
+```
+
+To make email work:
+
+```
+docker ps
+CONTAINER ID   IMAGE                  COMMAND  
+93b4f65875ae   wordpress:latest       "docker-entrypoint.s…"   6 hours ago   Up 6 hours   0.0.0.0:80->80/tcp                  attachmentav-wordpress-wordpress-1
+
+docker exec -it 93b4f65875ae /bin/bash
+
+apt-get update && apt-get install -y sendmail && apt-get clean
+/usr/sbin/sendmail -bd
 ```
 
 Optionally use `ngrok` to get a publicly reachable development domain.
@@ -36,6 +55,8 @@ Optionally use `ngrok` to get a publicly reachable development domain.
 ```
 ngrok http http://localhost:80
 ```
+
+> You might need to set the `siteurl` an `home` option in [phpMyAdmin](http://localhost:8081/index.php?route=/sql&pos=0&db=wordpress&table=wp_options) to `http://localhost` or the ngrok URL if this changed since last time.
 
 Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to print debug logs.
 

@@ -350,6 +350,45 @@ class Attachmentav_Loader {
 		if (get_option('attachmentav_scan_wpfileupload') != 'false') {
 			add_filter('wfu_after_file_loaded', 'wfu_after_file_loaded', 10, 2);
 		}
+
+		function wpcf7_validate_file($result, $tag, $additional_data) {
+			foreach ($additional_data['uploaded_files'] as $file) {
+				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+				$response = wp_remote_post( $endpoint, array(
+					'timeout' => 30,
+					'body'    => file_get_contents($file),
+					'headers' => array(
+						'x-api-key' => get_option('attachmentav_api_key'),
+						'x-wordpress-site-url' => get_site_url(),
+						'Content-Type' => 'application/octet-stream',
+					),
+				));
+				if (is_wp_error($response)) {
+					$error_messages = implode(',', $response->get_error_messages());
+					$result->invalidate($tag, "Failed to scan uploaded file for malware ({$error_messages}).");
+				} else {
+					if ($response['response']['code'] == 200) {
+						$body = json_decode($response['body'], true);
+						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
+							$result->invalidate($tag, "Could not scan file (e.g., encrypted files). Upload blocked.");
+						} else if ($body['status'] == 'infected') {
+							$result->invalidate($tag, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+						}
+					} else if ($response['response']['code'] == 401) {
+						$result->invalidate($tag, "Could not scan uploaded file for malware as license key is missing or invalid.");
+					} else if ($response['response']['code'] == 429) {
+						$result->invalidate($tag, "You've reached the maximum number of malware scans.");
+					} else {
+						$result->invalidate($tag, "Failed to scan uploaded file for malware due to unknown error.");
+					}
+				}
+			}
+			return $result;
+		}
+		if (get_option('attachmentav_scan_wpcf7') != 'false') {
+			add_filter('wpcf7_validate_file*', 'wpcf7_validate_file', 20, 3);
+			add_filter('wpcf7_validate_file', 'wpcf7_validate_file', 20, 3);
+		}
 	}
 
 }

@@ -119,17 +119,31 @@ class Attachmentav_Admin {
 			array( $this, 'sanitize_text' ) // Sanitize
 		);
 
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_scan_wpcf7', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
+
 		add_settings_section(
 			'attachmentav_subscription', // ID
 			'Subscription', // Title
 			array( $this, 'print_subscription_section' ), // Callback
 			'attachmentav' // Page
-		);  
+		);
 
 		add_settings_field(
 			'attachmentav_api_key', // ID
 			'API Key', // Title 
 			array( $this, 'print_api_key' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_subscription' // Section           
+		);
+
+		add_settings_field(
+			'attachmentav_upsell', // ID
+			'API Integration Available', // Title 
+			array( $this, 'print_block_upsell' ), // Callback
 			'attachmentav', // Page
 			'attachmentav_subscription' // Section           
 		);
@@ -173,6 +187,14 @@ class Attachmentav_Admin {
 		);
 
 		add_settings_field(
+			'attachmentav_scan_wpcf7', // ID
+			'Scan files uploaded with plugin "Contact Form 7"?', // Title 
+			array( $this, 'print_block_scan_wpcf7' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_plugins' // Section           
+		);
+
+		add_settings_field(
 			'attachmentav_scan_formidable', // ID
 			'Scan files uploaded with plugin "Formidable Forms"?', // Title 
 			array( $this, 'print_block_scan_formidable' ), // Callback
@@ -193,6 +215,11 @@ class Attachmentav_Admin {
 	public function print_subscription_section()
 	{
 		print '<a target="_blank" href="https://attachmentav.com/subscribe/wordpress/">Subscribe to attachmentAV</a> and enter the API key below.';
+	}
+
+	public function print_block_upsell()
+	{
+		print 'Take our antivirus protection beyond WordPress. Our API integrates with any workflow or application to secure your data wherever it lives. <a target="_blank" href="https://attachmentav.com/solution/virus-malware-scan-api/?utm_source=dashboard&utm_campaign=upsell">Learn more</a>!';
 	}
 
 	public function print_general_section()
@@ -233,6 +260,14 @@ class Attachmentav_Admin {
 			print('<select name="attachmentav_scan_wpfileupload"><option value="true" selected>Yes</option><option value="false">No</option></select>');
 		} else {
 			print('<select name="attachmentav_scan_wpfileupload"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+		}
+	}
+
+	public function print_block_scan_wpcf7() {
+		if (get_option('attachmentav_scan_wpcf7') != 'false') {
+			print('<select name="attachmentav_scan_wpcf7"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+		} else {
+			print('<select name="attachmentav_scan_wpcf7"><option value="true">Yes</option><option value="false" selected>No</option></select>');
 		}
 	}
 
