@@ -18,7 +18,7 @@ The plugin protects your blog from malware like viruses, worms, and trojans.
 3. The attachmentAV API scans the file for malware by using the Sophos engine.
 4. In the case of an infected file, the plugin blocks the upload.
 
-Also works with the popular file upload plugins [WPForms](https://wpforms.com/), [Formidable Forms](https://formidableforms.com/) and [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/).
+Also works with the popular file upload plugins [WPForms](https://wpforms.com/), [Formidable Forms](https://formidableforms.com/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/) and [Contact Form 7](https://contactform7.com/).
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary` or `https://eu.developer.attachmentav.com/v1/scan/sync/download`.
 
