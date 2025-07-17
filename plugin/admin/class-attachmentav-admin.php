@@ -188,7 +188,7 @@ class Attachmentav_Admin {
 
 		add_settings_field(
 			'attachmentav_scan_wpcf7', // ID
-			'Scan files uploaded with plugin "Contact Form 7"?', // Title 
+			'Scan files uploaded with plugin "Contact Form 7" or "Drag and Drop Multiple File Upload for Contact Form 7"?', // Title 
 			array( $this, 'print_block_scan_wpcf7' ), // Callback
 			'attachmentav', // Page
 			'attachmentav_plugins' // Section           

@@ -3,7 +3,7 @@ Contributors: andreaswittig,michaelwittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.4
+Stable tag: 1.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ The plugin protects your blog from malware like viruses, worms, and trojans.
 3. The attachmentAV API scans the file for malware by using the Sophos engine.
 4. In the case of an infected file, the plugin blocks the upload.
 
-Also works with the popular file upload plugins [WPForms](https://wpforms.com/), [Formidable Forms](https://formidableforms.com/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/) and [Contact Form 7](https://contactform7.com/).
+Also works with the popular file upload plugins [WPForms](https://wordpress.org/plugins/wpforms-lite/), [Formidable Forms](https://wordpress.org/plugins/formidable/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/), [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), and [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/).
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary` or `https://eu.developer.attachmentav.com/v1/scan/sync/download`.
 
@@ -42,10 +42,11 @@ attachmentAV scans all file types. The maximum file size is 10 MB.
 attachmentAV scans all files uploaded via:
 
 * The core [Media Library](https://wordpress.com/support/media/)
-* The plugin [WPForms](https://wpforms.com/)
-* The plugin [Formidable Forms](https://formidableforms.com/)
+* The plugin [WPForms](https://wordpress.org/plugins/wpforms-lite/)
+* The plugin [Formidable Forms](https://wordpress.org/plugins/formidable/)
 * The plugin [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/)
-* The plugin [Contact Form 7](https://contactform7.com/)
+* The plugin [Contact Form 7](https://wordpress.org/plugins/contact-form-7/)
+* The plugin [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/)
 
 == Screenshots ==
 
@@ -53,6 +54,9 @@ attachmentAV scans all files uploaded via:
 2. attachmentAV scan status shown for each media file.
 
 == Changelog ==
+
+= 1.5.0 =
+* Support for plugin Drag and Drop Multiple File Upload for Contact Form 7 added
 
 = 1.4.0 =
 * Support for plugin Contact Form 7 added
