@@ -351,10 +351,68 @@ class Attachmentav_Loader {
 			add_filter('wfu_after_file_loaded', 'wfu_after_file_loaded', 10, 2);
 		}
 
+		function wpcf7_validate_file_error($result, $tag, $file, $error_message) {
+			$result->invalidate($tag, $error_message);
+			wp_delete_file($file);
+			return $result;
+		}
 		function wpcf7_validate_file($result, $tag, $additional_data) {
 			foreach ($additional_data['uploaded_files'] as $file) {
+				if (filesize($file) <= 10000000) {
+					$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+					$response = wp_remote_post( $endpoint, array(
+						'timeout' => 30,
+						'body'    => file_get_contents($file),
+						'headers' => array(
+							'x-api-key' => get_option('attachmentav_api_key'),
+							'x-wordpress-site-url' => get_site_url(),
+							'Content-Type' => 'application/octet-stream',
+						),
+					));
+					if (is_wp_error($response)) {
+						$error_messages = implode(',', $response->get_error_messages());
+						$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware ({$error_messages}).");
+					} else {
+						if ($response['response']['code'] == 200) {
+							$body = json_decode($response['body'], true);
+							if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
+								$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file (e.g., encrypted files). Upload blocked.");
+							} else if ($body['status'] == 'infected') {
+								$result = wpcf7_validate_file_error($result, $tag, $file, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+							}
+						} else if ($response['response']['code'] == 401) {
+							$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan uploaded file for malware as license key is missing or invalid.");
+						} else if ($response['response']['code'] == 429) {
+							$result = wpcf7_validate_file_error($result, $tag, $file, "You've reached the maximum number of malware scans.");
+						} else {
+							$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware due to unknown error.");
+						}
+					}
+				} else {
+					if (get_option('attachmentav_block_unscannable') == 'true') {
+						$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+					}
+				}
+			}
+			return $result;
+		}
+		function wpcf7_upload_file_name_custom_error($file, $error_message) {
+			wp_send_json_error($error_message);
+			wp_delete_file($file);
+			// We have to "die" because the "Drag and Drop Multiple File Upload for Contact Form 7" plugin does not provide a better way to validate uploaded files than using a action
+			// The "Drag and Drop Multiple File Upload for Contact Form 7" code does not allow to use a filter that can return something useful because a success is always send back to the caller.
+			// Allow other plugin to hook
+			// do_action('wpcf7_upload_file_name_custom', $new_file, $filename );
+			// Custom filter after upload
+			// $files = apply_filters( 'dnd_cf7_after_upload', $files );
+			// Return json files
+			// wp_send_json_success( $files );
+			die;
+		}
+		function wpcf7_upload_file_name_custom($file, $filename) {
+			if (filesize($file) <= 10000000) {
 				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
-				$response = wp_remote_post( $endpoint, array(
+				$response = wp_remote_post($endpoint, array(
 					'timeout' => 30,
 					'body'    => file_get_contents($file),
 					'headers' => array(
@@ -365,30 +423,33 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					$result->invalidate($tag, "Failed to scan uploaded file for malware ({$error_messages}).");
+					wpcf7_upload_file_name_custom_error($file, "Failed to scan uploaded file for malware ({$error_messages}).");
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
 						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-							$result->invalidate($tag, "Could not scan file (e.g., encrypted files). Upload blocked.");
+							wpcf7_upload_file_name_custom_error($file, "Could not scan file (e.g., encrypted files). Upload blocked.");
 						} else if ($body['status'] == 'infected') {
-							$result->invalidate($tag, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+							wpcf7_upload_file_name_custom_error($file, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
 						}
 					} else if ($response['response']['code'] == 401) {
-						$result->invalidate($tag, "Could not scan uploaded file for malware as license key is missing or invalid.");
+						wpcf7_upload_file_name_custom_error($file, "Could not scan uploaded file for malware as license key is missing or invalid.");
 					} else if ($response['response']['code'] == 429) {
-						$result->invalidate($tag, "You've reached the maximum number of malware scans.");
+						wpcf7_upload_file_name_custom_error($file, "You've reached the maximum number of malware scans.");
 					} else {
-						$result->invalidate($tag, "Failed to scan uploaded file for malware due to unknown error.");
+						wpcf7_upload_file_name_custom_error($file, "Failed to scan uploaded file for malware due to unknown error.");
 					}
 				}
+			} else {
+				if (get_option('attachmentav_block_unscannable') == 'true') {
+					wpcf7_upload_file_name_custom_error($file, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+				}
 			}
-			return $result;
 		}
 		if (get_option('attachmentav_scan_wpcf7') != 'false') {
+			add_action('wpcf7_upload_file_name_custom', 'wpcf7_upload_file_name_custom', 10, 2 ); // This hook is not provided by CF7 as the name implies, it is provided by "Drag and Drop Multiple File Upload for Contact Form 7"
 			add_filter('wpcf7_validate_file*', 'wpcf7_validate_file', 20, 3);
 			add_filter('wpcf7_validate_file', 'wpcf7_validate_file', 20, 3);
 		}
 	}
-
 }
