@@ -351,6 +351,11 @@ class Attachmentav_Loader {
 			add_filter('wfu_after_file_loaded', 'wfu_after_file_loaded', 10, 2);
 		}
 
+		function wpcf7_validate_file_error($result, $tag, $file, $error_message) {
+			$result->invalidate($tag, $error_message);
+			wp_delete_file($file);
+			return $result;
+		}
 		function wpcf7_validate_file($result, $tag, $additional_data) {
 			foreach ($additional_data['uploaded_files'] as $file) {
 				if (filesize($file) <= 10000000) {
@@ -366,26 +371,26 @@ class Attachmentav_Loader {
 					));
 					if (is_wp_error($response)) {
 						$error_messages = implode(',', $response->get_error_messages());
-						$result->invalidate($tag, "Failed to scan uploaded file for malware ({$error_messages}).");
+						$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware ({$error_messages}).");
 					} else {
 						if ($response['response']['code'] == 200) {
 							$body = json_decode($response['body'], true);
 							if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-								$result->invalidate($tag, "Could not scan file (e.g., encrypted files). Upload blocked.");
+								$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file (e.g., encrypted files). Upload blocked.");
 							} else if ($body['status'] == 'infected') {
-								$result->invalidate($tag, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+								$result = wpcf7_validate_file_error($result, $tag, $file, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
 							}
 						} else if ($response['response']['code'] == 401) {
-							$result->invalidate($tag, "Could not scan uploaded file for malware as license key is missing or invalid.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan uploaded file for malware as license key is missing or invalid.");
 						} else if ($response['response']['code'] == 429) {
-							$result->invalidate($tag, "You've reached the maximum number of malware scans.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, "You've reached the maximum number of malware scans.");
 						} else {
-							$result->invalidate($tag, "Failed to scan uploaded file for malware due to unknown error.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware due to unknown error.");
 						}
 					}
 				} else {
 					if (get_option('attachmentav_block_unscannable') == 'true') {
-						$result->invalidate($tag, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+						$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
 					}
 				}
 			}
