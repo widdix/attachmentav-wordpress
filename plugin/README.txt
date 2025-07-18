@@ -20,7 +20,7 @@ The plugin protects your blog from malware like viruses, worms, and trojans.
 
 Also works with the popular file upload plugins [WPForms](https://wordpress.org/plugins/wpforms-lite/), [Formidable Forms](https://wordpress.org/plugins/formidable/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/), [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), and [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/).
 
-An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary` or `https://eu.developer.attachmentav.com/v1/scan/sync/download`.
+An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary`.
 
 == Installation ==
 
