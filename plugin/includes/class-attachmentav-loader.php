@@ -126,8 +126,7 @@ class Attachmentav_Loader {
 
 		
 		function attachmentav_upload_prefilter( $file ) {
-			// Maximum file size for realtime scanning is 10 MB
-			if ($file['size'] <= 10000000) {
+			if ($file['size'] <= 10000000) { // Maximum file size for realtime scanning is 10 MB
 				WP_Filesystem();
 				global $wp_filesystem;
 				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
@@ -141,8 +140,8 @@ class Attachmentav_Loader {
 					),
 				));
 				if (is_wp_error($response)) {
-					$errmsg = implode(',', $response->get_error_messages());
-					$file['error'] = "attachmentAV: Failed to scan uploaded file for malware ({$errmsg}). Please try again later or contact hello@attachmentav.com for help.";
+					$error_messages = implode(',', $response->get_error_messages());
+					$file['error'] = "attachmentAV: Failed to scan uploaded file for malware ({$error_messages}). Please try again later or contact hello@attachmentav.com for help.";
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
@@ -183,67 +182,93 @@ class Attachmentav_Loader {
 		}
 		add_filter('media_meta', "modify_media_meta", null, 2);
 
-		function scan_attachment($post_id) {
-			$attachment_url = wp_get_attachment_url( $post_id );
-			$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/download';
-			$args = array(
-				'timeout' => 30,
-				'body'    => '{"download_url":"' . $attachment_url . '"}',
-				'headers' => array(
-					'x-api-key' => get_option('attachmentav_api_key'),
-					'x-wordpress-site-url' => get_site_url(),
-					'Content-Type' => 'application/json',
-				),
-			);
-			$response = wp_remote_post( $endpoint, $args);
-			if (is_wp_error($response)) {
-				add_post_meta($post_id, 'attachmentav_scan_result', 'error:client');
-			} else {
-				if ($response['response']['code'] == 200) {
-					$body = json_decode($response['body'], true);
-					add_post_meta($post_id, 'attachmentav_scan_result', $body['status']);
-					if (array_key_exists('finding', $body)) {
-						add_post_meta($post_id, 'attachmentav_scan_finding', $body['finding']);
-					}
-				} else if ($response['response']['code'] == 401) {
-					add_post_meta($post_id, 'attachmentav_scan_result', 'error:license_key_missing');
-				} else if ($response['response']['code'] == 429) {
-					add_post_meta($post_id, 'attachmentav_scan_result', 'error:max_scans_reached');
-				} else {
-					add_post_meta($post_id, 'attachmentav_scan_result', 'error:server');
-				}
+		function scan_attachment_block_unscannable($post_id) {
+			if (get_option('attachmentav_block_unscannable') == 'true') {
+				wp_delete_attachment($post_id, true);
 			}
-			add_post_meta($post_id, 'attachmentav_scan_result', 'CLEAN');
+		}
+		function scan_attachment_error($post_id, $error_code) {
+			add_post_meta($post_id, 'attachmentav_scan_result', "error:" . $error_code);
+			scan_attachment_block_unscannable($post_id);
+		}
+		function scan_attachment($post_id) {
+			$file = get_attached_file($post_id);
+			if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
+				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+				$response = wp_remote_post( $endpoint, array(
+					'timeout' => 30,
+					'body'    => file_get_contents($file),
+					'headers' => array(
+						'x-api-key' => get_option('attachmentav_api_key'),
+						'x-wordpress-site-url' => get_site_url(),
+						'Content-Type' => 'application/octet-stream',
+					),
+				));
+				if (is_wp_error($response)) {
+					$error_messages = implode(',', $response->get_error_messages());
+					error_log("attachmentAV: Failed to scan uploaded file for malware ({$error_messages}).");
+					scan_attachment_error($post_id, 'client');
+				} else {
+					if ($response['response']['code'] == 200) {
+						$body = json_decode($response['body'], true);
+						add_post_meta($post_id, 'attachmentav_scan_result', $body['status']);
+						if (array_key_exists('finding', $body)) {
+							add_post_meta($post_id, 'attachmentav_scan_finding', $body['finding']);
+						}
+						if ($body['status'] == 'infected') {
+							wp_delete_attachment($post_id, true);
+						} else if ($body['status'] == 'no') {
+							scan_attachment_block_unscannable($post_id);
+						}
+					} else if ($response['response']['code'] == 401) {
+						scan_attachment_error($post_id, 'license_key_missing');
+					} else if ($response['response']['code'] == 429) {
+						scan_attachment_error($post_id, 'max_scans_reached');
+					} else {
+						scan_attachment_error($post_id, 'server');
+					}
+				}
+			} else {
+				scan_attachment_error($post_id, 'too_big');
+			}
 		}
 		add_action('add_attachment', 'scan_attachment');
 
 		function wpforms_scan_file($file) {
-			$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/download';
-			$args = array(
-				'timeout' => 30,
-				'body'    => '{"download_url":"' . $file['value'] . '"}',
-				'headers' => array(
-					'x-api-key' => get_option('attachmentav_api_key'),
-					'x-wordpress-site-url' => get_site_url(),
-					'Content-Type' => 'application/json',
-				),
-			);
-			$response = wp_remote_post( $endpoint, $args);
-			if (is_wp_error($response)) {
-				return array('status' => 'error:client');
-			} else {
-				if ($response['response']['code'] == 200) {
-					return json_decode($response['body'], true);
-				} else if ($response['response']['code'] == 401) {
-					return array('status' => 'error:license_key_missing');
-				} else if ($response['response']['code'] == 429) {
-					return array('status' => 'error:max_scans_reached');
+			if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
+				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+				$response = wp_remote_post($endpoint, array(
+					'timeout' => 30,
+					'body'    => file_get_contents($file),
+					'headers' => array(
+						'x-api-key' => get_option('attachmentav_api_key'),
+						'x-wordpress-site-url' => get_site_url(),
+						'Content-Type' => 'application/octet-stream',
+					),
+				));
+				if (is_wp_error($response)) {
+					$error_messages = implode(',', $response->get_error_messages());
+					error_log("attachmentAV: Failed to scan uploaded WPForms file for malware ({$error_messages}).");
+					return array('status' => 'error:client');
 				} else {
-					return array('status' => 'error:server');
+					if ($response['response']['code'] == 200) {
+						return json_decode($response['body'], true);
+					} else if ($response['response']['code'] == 401) {
+						return array('status' => 'error:license_key_missing');
+					} else if ($response['response']['code'] == 429) {
+						return array('status' => 'error:max_scans_reached');
+					} else {
+						return array('status' => 'error:server');
+					}
+				}
+			} else {
+				if (get_option('attachmentav_block_unscannable') == 'true') {
+					return array('status' => 'error:too_big');
 				}
 			}
 		}
-		function wpforms_status2error($filename, $ret) {
+		function wpforms_status2error($file, $filename, $ret) {
+			wp_delete_file($file);
 			if ($ret['status'] == 'infected') {
 				if (!empty($ret['finding'])) {
 					return 'The file ' . $filename . ' is infected and therefore blocked (' . $ret['finding'] . ')';
@@ -261,32 +286,38 @@ class Attachmentav_Loader {
 			}
 		}
 		function wpforms_process_entry_save($fields, $entry, $form_id, $form_data) {
+			$upload_dir = wpforms_upload_dir();
+			$upload_path = $upload_dir['path'];
+			$form_directory = absint( $form_id ) . '-' . md5( $form_id . $form_data['created'] );
+			$upload_path_form = wp_normalize_path( trailingslashit( $upload_path ) . $form_directory );
 			foreach ($fields as $i => $field) {
 				if ($field['type'] == 'file-upload') {
 					$errors = [];
 					if(!empty($field['value_raw'])) { // style modern
-						foreach($field['value_raw'] as $file) {
+						foreach($field['value_raw'] as $v) {
+							$file = trailingslashit($upload_path_form) . $v['file'];
 							$ret = wpforms_scan_file($file);
 							if ($ret['status'] == 'no') {
 								if (get_option('attachmentav_block_unscannable') == 'true') {
-									$errors[] = wpforms_status2error($file['file_user_name'], $ret);
+									$errors[] = wpforms_status2error($file, $v['file_user_name'], $ret);
 								}
 							} else if ($ret['status'] == 'clean') {
 								// continue
 							} else {
-								$errors[] = wpforms_status2error($file['file_user_name'], $ret);
+								$errors[] = wpforms_status2error($file, $v['file_user_name'], $ret);
 							}
 						}
 					} else if(!empty($field['value'])) { // style classic
-						$ret = wpforms_scan_file($field);
+						$file = trailingslashit($upload_path_form) . $field['file'];
+						$ret = wpforms_scan_file($file);
 						if ($ret['status'] == 'no') {
 							if (get_option('attachmentav_block_unscannable') == 'true') {
-								$errors[] = wpforms_status2error($field['file_user_name'], $ret);
+								$errors[] = wpforms_status2error($file, $field['file_user_name'], $ret);
 							}
 						} else if ($ret['status'] == 'clean') {
 							// continue
 						} else {
-							$errors[] = wpforms_status2error($field['file_user_name'], $ret);
+							$errors[] = wpforms_status2error($file, $field['file_user_name'], $ret);
 						}
 					}
 					if (count($errors) > 0) {
@@ -300,6 +331,12 @@ class Attachmentav_Loader {
 			add_action('wpforms_process_entry_save', 'wpforms_process_entry_save', 10, 4);
 		}
 
+		function wfu_after_file_loaded_error($wp_filesystem, $changable_data, $file, $error_message, $error_message_admin_suffix) {
+			$changable_data['error_message'] = $error_message;
+			$changable_data['admin_message'] = $error_message . " " . $error_message_admin_suffix;
+			$wp_filesystem->delete($file);
+			return $changable_data;
+		}
 		function wfu_after_file_loaded($changable_data, $additional_data) {
 			WP_Filesystem();
 			global $wp_filesystem;
@@ -316,33 +353,26 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					$changable_data['error_message'] = "Failed to scan uploaded file for malware ({$error_messages}).";
-					$changable_data['admin_message'] = "Failed to scan uploaded file for malware ({$errmsg}). Please try again later or contact hello@attachmentav.com for help.";
+					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Failed to scan uploaded file for malware ({$error_messages}).", "Please try again later or contact hello@attachmentav.com for help.");
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
 						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-							$changable_data['error_message'] = "Could not scan file (e.g., encrypted files). Upload blocked.";
-							$changable_data['admin_message'] = "Could not scan file (e.g., encrypted files). Upload blocked. Go to settings and allow uploading unscannable files.";
+							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan file (e.g., encrypted files). Upload blocked.", "Go to settings and allow uploading unscannable files.");
 						} else if ($body['status'] == 'infected') {
-							$changable_data['error_message'] = "Uploaded file is infected ({$body['finding']}). Upload blocked.";
-							$changable_data['admin_message'] = "Uploaded file is infected ({$body['finding']}). Upload blocked.";
+							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Uploaded file is infected ({$body['finding']}). Upload blocked.", "");
 						}
 					} else if ($response['response']['code'] == 401) {
-						$changable_data['error_message'] = "Could not scan uploaded file for malware as license key is missing or invalid.";
-						$changable_data['admin_message'] = "Could not scan uploaded file for malware as license key is missing or invalid. Go to settings and add a valid license key.";
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan uploaded file for malware as license key is missing or invalid.", "Go to settings and add a valid license key.");
 					} else if ($response['response']['code'] == 429) {
-						$changable_data['error_message'] = "You've reached the maximum number of malware scans.";
-						$changable_data['admin_message'] = "You've reached the maximum number of malware scans. Please try again later or contact hello@attachmentav.com for help.";
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "You've reached the maximum number of malware scans.", "Please try again later or contact hello@attachmentav.com for help.");
 					} else {
-						$changable_data['error_message'] = "Failed to scan uploaded file for malware due to unknown error.";
-						$changable_data['admin_message'] = "Failed to scan uploaded file for malware due to unknown error. Please try again later or contact hello@attachmentav.com for help.";
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Failed to scan uploaded file for malware due to unknown error.", "Please try again later or contact hello@attachmentav.com for help.");
 					}
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					$changable_data['error_message']= "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.";
-					$changable_data['admin_message'] = "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked. Go to settings and allow uploading unscannable files.";
+					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.", "Go to settings and allow uploading unscannable files.");
 				}
 			}
 			return $changable_data;
@@ -358,7 +388,7 @@ class Attachmentav_Loader {
 		}
 		function wpcf7_validate_file($result, $tag, $additional_data) {
 			foreach ($additional_data['uploaded_files'] as $file) {
-				if (filesize($file) <= 10000000) {
+				if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
 					$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
 					$response = wp_remote_post( $endpoint, array(
 						'timeout' => 30,
@@ -410,7 +440,7 @@ class Attachmentav_Loader {
 			die;
 		}
 		function wpcf7_upload_file_name_custom($file, $filename) {
-			if (filesize($file) <= 10000000) {
+			if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
 				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
 				$response = wp_remote_post($endpoint, array(
 					'timeout' => 30,
