@@ -55,6 +55,9 @@ attachmentAV scans all files uploaded via:
 
 == Changelog ==
 
+= 1.5.1 =
+* Small fixes
+
 = 1.5.0 =
 * Support for plugin Drag and Drop Multiple File Upload for Contact Form 7 added
 
