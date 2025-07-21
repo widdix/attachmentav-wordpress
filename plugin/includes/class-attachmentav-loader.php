@@ -427,17 +427,8 @@ class Attachmentav_Loader {
 			return $result;
 		}
 		function wpcf7_upload_file_name_custom_error($file, $error_message) {
-			wp_send_json_error($error_message);
 			wp_delete_file($file);
-			// We have to "die" because the "Drag and Drop Multiple File Upload for Contact Form 7" plugin does not provide a better way to validate uploaded files than using a action
-			// The "Drag and Drop Multiple File Upload for Contact Form 7" code does not allow to use a filter that can return something useful because a success is always send back to the caller.
-			// Allow other plugin to hook
-			// do_action('wpcf7_upload_file_name_custom', $new_file, $filename );
-			// Custom filter after upload
-			// $files = apply_filters( 'dnd_cf7_after_upload', $files );
-			// Return json files
-			// wp_send_json_success( $files );
-			die;
+			wp_send_json_error($error_message); // calls PHP's die to stop execution of request
 		}
 		function wpcf7_upload_file_name_custom($file, $filename) {
 			if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
