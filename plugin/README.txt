@@ -37,7 +37,11 @@ Go to [attachmentAV for WordPress Setup Guide](https://attachmentav.com/help/set
 
 = Which file types are supported? =
 
-attachmentAV scans all file types. The maximum file size is 10 MB.
+attachmentAV scans all file types.
+
+= What's the maximum supported file size? =
+
+The maximum file size is 10 MB.
 
 = Which upload methods are covered? =
 
