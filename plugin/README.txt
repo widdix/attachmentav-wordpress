@@ -57,6 +57,9 @@ attachmentAV scans all files uploaded via:
 
 == Changelog ==
 
+= 1.5.2 =
+* Minor improvements
+
 = 1.5.1 =
 * Small fixes
 
