@@ -22,6 +22,8 @@ Also works with the popular file upload plugins [WPForms](https://wordpress.org/
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary`.
 
+Would you like to see attachmentAV in action? Check out the [demo video](https://youtu.be/gK3Py4tiuHQ).
+
 == Installation ==
 
 * Install attachmentAV either via the WordPress.org plugin repository or by uploading the files to your server. (See instructions on [how to install a WordPress plugin](https://www.wpbeginner.com/beginners-guide/step-by-step-guide-to-install-a-wordpress-plugin-for-beginners/))
