@@ -31,7 +31,7 @@ services:
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./error-logging.ini:/usr/local/etc/php/conf.d/error-logging.ini
   phpmyadmin:
-    image: 'phpmyadmin:5.2.2'
+    image: 'phpmyadmin:5.2.3'
     ports:
       - '8081:80'
     depends_on:
