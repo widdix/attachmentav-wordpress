@@ -16,7 +16,7 @@
  * Plugin Name:       attachmentAV
  * Plugin URI:        https://attachmentav.com/solution/malware-protection-for-wordpress/
  * Description:       Protect your blog from malware. Scan attachments for viruses, worms, and trojans by sending them to the attachmentAV API powered by Sophos. To get started, please go to your <a href="/wp-admin/admin.php?page=attachmentav">attachmentAV Settings page</a> to set up your API key.
- * Version:           1.5.1
+ * Version:           1.7.0
  * Author:            widdix GmbH
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'ATTACHMENTAV_VERSION', '1.5.1' );
+define( 'ATTACHMENTAV_VERSION', '1.7.0' );
 
 /**
  * The code that runs during plugin activation.

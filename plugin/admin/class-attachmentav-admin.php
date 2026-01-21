@@ -82,6 +82,7 @@ class Attachmentav_Admin {
 			<form method="post" action="options.php">
 			<?php
 				// This prints out all hidden setting fields
+				settings_errors( 'attachmentav' );
 				settings_fields( 'attachmentav' );
 				do_settings_sections( 'attachmentav' );
 				submit_button();
@@ -98,7 +99,7 @@ class Attachmentav_Admin {
 		register_setting(
 			'attachmentav', // Option group
 			'attachmentav_api_key', // Option name
-			array( $this, 'sanitize_text' ) // Sanitize
+			array( $this, 'sanitize_api_key' ) // Sanitize
 		);
 
 		register_setting(
@@ -203,13 +204,34 @@ class Attachmentav_Admin {
 		);
 	}
 
-	/**
-	 * Sanitize each setting field as needed
-	 *
-	 * @param array $input Contains all settings fields as array keys
-	 */
 	public function sanitize_text( $input ) {
 		return sanitize_text_field($input);
+	}
+
+	public function sanitize_api_key( $input ) {
+		$api_key = sanitize_text_field($input);
+		$response = wp_remote_get('https://eu.developer.attachmentav.com/v1/test', array(
+			'timeout' => 30,
+			'headers' => array(
+				'x-api-key' => $api_key,
+				'x-wordpress-site-url' => get_site_url(),
+			),
+		));
+		if (is_wp_error($response)) {
+			$error_messages = implode(',', $response->get_error_messages());
+			add_settings_error('attachmentav_api_key', 'attachmentav_api_key', "Failure ({$error_messages}", 'error');
+			return get_option( 'attachmentav_api_key' );
+		} else {
+			if ($response['response']['code'] == 204) {
+				return $api_key;
+			} else if ($response['response']['code'] == 401) {
+				add_settings_error('attachmentav_api_key', 'attachmentav_api_key', 'License key is invalid', 'error');
+				return get_option( 'attachmentav_api_key' );
+			} else {
+				add_settings_error('attachmentav_api_key', 'attachmentav_api_key', "Unknown error ({$response['response']['code']}", 'error');
+				return get_option( 'attachmentav_api_key' );
+			}
+		}
 	}
 
 	public function print_subscription_section()
@@ -233,10 +255,31 @@ class Attachmentav_Admin {
 	}
 
 	public function print_api_key() {
-			printf(
-				'<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
-			);
-		
+		printf(
+			'<input type="text" name="attachmentav_api_key" value="%s" />', esc_attr(get_option('attachmentav_api_key'))
+		);
+		$response = wp_remote_get('https://eu.developer.attachmentav.com/v1/usage', array(
+			'timeout' => 30,
+			'headers' => array(
+				'x-api-key' => get_option('attachmentav_api_key'),
+				'x-wordpress-site-url' => get_site_url(),
+			),
+		));
+		if (is_wp_error($response)) {
+			$error_messages = implode(',', $response->get_error_messages());
+			printf("Failed to get usage ({$error_messages}). Please try again later or contact hello@attachmentav.com for help.");
+		} else {
+			if ($response['response']['code'] == 200) {
+				$body = json_decode($response['body'], true);
+				$usage = $body['quota']['limit']-$body['credits'];
+				$period = strtolower($body['quota']['period']);
+				printf("You used {$usage} of your {$body['quota']['limit']} scans this {$period}.");
+			} else if ($response['response']['code'] == 401) {
+				printf("Could not get usage as license key is missing or invalid. Add a valid license key.");
+			} else {
+				printf("Failed to get usage due to unknown error ({$response['response']['code']}). Please try again later or contact hello@attachmentav.com for help.");
+			}
+		}
 	}
 
 	public function print_block_unscannable() {
