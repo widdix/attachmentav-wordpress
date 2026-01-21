@@ -2,8 +2,8 @@
 Contributors: andreaswittig,michaelwittig
 Tags: malware,virus,antivirus,malware scanner,security
 Requires at least: 6.0
-Tested up to: 6.8
-Stable tag: 1.5
+Tested up to: 6.9
+Stable tag: 1.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,11 +61,12 @@ attachmentAV scans all files uploaded via:
 
 == Changelog ==
 
-= 1.5.2 =
-* Minor improvements
+= 1.6.0 =
+* Show API key usage information
+* Support Wordpress 6.9
 
 = 1.5.1 =
-* Small fixes
+* Bug fixes
 
 = 1.5.0 =
 * Support for plugin Drag and Drop Multiple File Upload for Contact Form 7 added
@@ -77,16 +78,16 @@ attachmentAV scans all files uploaded via:
 * Support Wordpress 6.8
 
 = 1.2.1 =
-* Minor fixes
+* Bug fixes
 
 = 1.2.0 =
 * Support for plugin Formidable Forms added
 
 = 1.1.2 =
-* Small fixes
+* Bug fixes
 
 = 1.1.1 =
-* Small fixes
+* Bug fixes
 
 = 1.1.0 =
 * Support for plugin WPForms added
@@ -96,16 +97,16 @@ attachmentAV scans all files uploaded via:
 * Adding scan results to metadata
 
 = 1.0.4 =
-* Small fixes
+* Bug fixes
 
 = 1.0.3 =
-* Small fixes
+* Bug fixes
 
 = 1.0.2 =
-* Small fixes
+* Bug fixes
 
 = 1.0.1 =
-* Small fixes
+* Bug fixes
 
 = 1.0 =
 * Initial Release
