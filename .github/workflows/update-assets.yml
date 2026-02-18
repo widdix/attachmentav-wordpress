@@ -1,0 +1,17 @@
+name: Update README and assets
+on:
+  push:
+    branches:
+    - main
+jobs:
+  update:
+    name: Update README and assets
+    runs-on: ['hyperenv', 'medium-eu-west-1']
+    steps:
+    - uses: actions/checkout@v4
+    - uses: 10up/action-wordpress-plugin-asset-update@stable
+      env:
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        ASSETS_DIR: '.wordpress-org'
+        SLUG: attachmentav
