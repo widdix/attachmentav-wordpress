@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - main
+  workflow_dispatch:
 jobs:
   update:
     name: Update README and assets
