@@ -267,7 +267,7 @@ class Attachmentav_Admin {
 		));
 		if (is_wp_error($response)) {
 			$error_messages = implode(',', $response->get_error_messages());
-			printf("Failed to get usage ({$error_messages}). Please try again later or contact hello@attachmentav.com for help.");
+			printf("Failed to get usage ({$error_messages}).");
 		} else {
 			if ($response['response']['code'] == 200) {
 				$body = json_decode($response['body'], true);
@@ -277,7 +277,7 @@ class Attachmentav_Admin {
 			} else if ($response['response']['code'] == 401) {
 				printf("Could not get usage as license key is missing or invalid. Add a valid license key.");
 			} else {
-				printf("Failed to get usage due to unknown error ({$response['response']['code']}). Please try again later or contact hello@attachmentav.com for help.");
+				printf("Failed to get usage due to unknown error ({$response['response']['code']}).");
 			}
 		}
 	}
