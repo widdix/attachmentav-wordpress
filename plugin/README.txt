@@ -1,13 +1,13 @@
 === attachmentAV - Virus and Malware Scan powered by Sophos ===
 Contributors: andreaswittig,michaelwittig
-Tags: antivirus,virus,malware,scan,protection
+Tags: antivirus,virus,malware,security
 Requires at least: 6.0
 Tested up to: 6.9.1
 Stable tag: 1.7.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Protect your WordPress site from viruses, trojans, ransomware, and other kinds of malware. Antivirus powered by Sophos.
+Antivirus powered by Sophos. Virus scanning for media uploads. Advanced malware protection.
 
 == Description ==
 
