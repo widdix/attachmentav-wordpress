@@ -472,5 +472,85 @@ class Attachmentav_Loader {
 			add_filter('wpcf7_validate_file*', 'wpcf7_validate_file', 20, 3);
 			add_filter('wpcf7_validate_file', 'wpcf7_validate_file', 20, 3);
 		}
+
+		function gform_scan_file($file_path, $filename) {
+			if (filesize($file_path) <= 10000000) {
+				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+				$response = wp_remote_post($endpoint, array(
+					'timeout' => 30,
+					'body'    => file_get_contents($file_path),
+					'headers' => array(
+						'x-api-key' => get_option('attachmentav_api_key'),
+						'x-wordpress-site-url' => get_site_url(),
+						'Content-Type' => 'application/octet-stream',
+					),
+				));
+				if (is_wp_error($response)) {
+					$error_messages = implode(',', $response->get_error_messages());
+					return "attachmentAV: Failed to scan {$filename} for malware ({$error_messages}).";
+				}
+				if ($response['response']['code'] == 200) {
+					$body = json_decode($response['body'], true);
+					if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
+						return "attachmentAV: Could not scan {$filename} (e.g., encrypted files). Upload blocked.";
+					} else if ($body['status'] == 'infected') {
+						return "attachmentAV: {$filename} is infected ({$body['finding']}). Upload blocked.";
+					}
+					return null;
+				} else if ($response['response']['code'] == 401) {
+					return "attachmentAV: Could not scan {$filename} for malware as license key is missing or invalid.";
+				} else if ($response['response']['code'] == 429) {
+					return "attachmentAV: You've reached the maximum number of malware scans.";
+				} else {
+					return "attachmentAV: Failed to scan {$filename} for malware due to unknown error.";
+				}
+			} else {
+				if (get_option('attachmentav_block_unscannable') == 'true') {
+					return "attachmentAV: Could not scan {$filename} as it exceeds the maximum of 10 MB. Upload blocked.";
+				}
+				return null;
+			}
+		}
+		function gform_validation_scan($validation_result) {
+			$form = $validation_result['form'];
+			foreach ($form['fields'] as &$field) {
+				if ($field->get_input_type() !== 'fileupload') {
+					continue;
+				}
+				$input_name = 'input_' . $field->id;
+				if ($field->multipleFiles) {
+					if (isset(GFFormsModel::$uploaded_files[$form['id']][$input_name])) {
+						$upload_path = GFFormsModel::get_upload_path($form['id']) . '/tmp/';
+						foreach (GFFormsModel::$uploaded_files[$form['id']][$input_name] as $file_info) {
+							$tmp_file = $upload_path . $file_info['temp_filename'];
+							if (!file_exists($tmp_file)) {
+								continue;
+							}
+							$error = gform_scan_file($tmp_file, $file_info['uploaded_filename']);
+							if ($error !== null) {
+								$validation_result['is_valid'] = false;
+								$field->failed_validation = true;
+								$field->validation_message = $error;
+								break;
+							}
+						}
+					}
+				} else {
+					if (!empty($_FILES[$input_name]['tmp_name'])) {
+						$error = gform_scan_file($_FILES[$input_name]['tmp_name'], $_FILES[$input_name]['name']);
+						if ($error !== null) {
+							$validation_result['is_valid'] = false;
+							$field->failed_validation = true;
+							$field->validation_message = $error;
+						}
+					}
+				}
+			}
+			$validation_result['form'] = $form;
+			return $validation_result;
+		}
+		if (get_option('attachmentav_scan_gravityforms') != 'false') {
+			add_filter('gform_validation', 'gform_validation_scan');
+		}
 	}
 }
