@@ -126,6 +126,12 @@ class Attachmentav_Admin {
 			array( $this, 'sanitize_text' ) // Sanitize
 		);
 
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_scan_gravityforms', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
+
 		add_settings_section(
 			'attachmentav_subscription', // ID
 			'Subscription', // Title
@@ -191,6 +197,14 @@ class Attachmentav_Admin {
 			'attachmentav_scan_wpcf7', // ID
 			'Scan files uploaded with plugin "Contact Form 7" or "Drag and Drop Multiple File Upload for Contact Form 7"?', // Title 
 			array( $this, 'print_block_scan_wpcf7' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_plugins' // Section           
+		);
+
+		add_settings_field(
+			'attachmentav_scan_gravityforms', // ID
+			'Scan files uploaded with plugin "Gravity Forms"?', // Title 
+			array( $this, 'print_block_scan_gravityforms' ), // Callback
 			'attachmentav', // Page
 			'attachmentav_plugins' // Section           
 		);
@@ -311,6 +325,14 @@ class Attachmentav_Admin {
 			print('<select name="attachmentav_scan_wpcf7"><option value="true" selected>Yes</option><option value="false">No</option></select>');
 		} else {
 			print('<select name="attachmentav_scan_wpcf7"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+		}
+	}
+
+	public function print_block_scan_gravityforms() {
+		if (get_option('attachmentav_scan_gravityforms') != 'false') {
+			print('<select name="attachmentav_scan_gravityforms"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+		} else {
+			print('<select name="attachmentav_scan_gravityforms"><option value="true">Yes</option><option value="false" selected>No</option></select>');
 		}
 	}
 

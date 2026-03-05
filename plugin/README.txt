@@ -3,7 +3,7 @@ Contributors: andreaswittig,michaelwittig
 Tags: antivirus,virus,malware,security
 Requires at least: 6.0
 Tested up to: 6.9.1
-Stable tag: 1.7.1
+Stable tag: 1.8.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ The plugin protects your blog from malware like viruses, worms, and trojans.
 3. The attachmentAV API scans the file for malware by using the Sophos engine.
 4. In the case of an infected file, the plugin blocks the upload.
 
-Also works with the popular file upload plugins [WPForms](https://wordpress.org/plugins/wpforms-lite/), [Formidable Forms](https://wordpress.org/plugins/formidable/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/), [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), and [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/).
+Also works with the popular file upload plugins [WPForms](https://wordpress.org/plugins/wpforms-lite/), [Formidable Forms](https://wordpress.org/plugins/formidable/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/), [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/), and [Gravity Forms](https://gravity.com).
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary`.
 
@@ -53,6 +53,7 @@ attachmentAV scans all files uploaded via:
 * The plugin [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/)
 * The plugin [Contact Form 7](https://wordpress.org/plugins/contact-form-7/)
 * The plugin [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/)
+* The plugin [Gravity Forms](https://gravity.com)
 
 == Screenshots ==
 
@@ -60,6 +61,9 @@ attachmentAV scans all files uploaded via:
 2. attachmentAV scan status shown for each media file.
 
 == Changelog ==
+
+= 1.8.0 =
+* Adding support for Gravity Forms.
 
 = 1.7.1 =
 * Bug fixes
