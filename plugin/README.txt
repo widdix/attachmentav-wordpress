@@ -1,24 +1,36 @@
-=== attachmentAV - Virus and Malware Scan powered by Sophos ===
+=== attachmentAV - Virus Scan & Malware Protection for form plugins like Contact Form 7, WPForms, Gravity Forms ===
 Contributors: andreaswittig,michaelwittig
-Tags: antivirus,virus,malware,security
+Tags: virus scan, malware protection, wpforms, contact form 7, gravity forms
 Requires at least: 6.0
 Tested up to: 6.9.1
 Stable tag: 1.8.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Antivirus powered by Sophos. Virus scanning for media uploads. Advanced malware protection.
+Virus scan and malware protection for Contact Form 7, WPForms, Gravity Forms, Formidable Forms, Iptanus File Upload, and more. Powered by Sophos.
 
 == Description ==
 
-The plugin protects your blog from malware like viruses, worms, and trojans.
+Protect your WordPress site from malware by scanning all file uploads for viruses, worms, and trojans. Powered by the Sophos engine, attachmentAV scans every file before it reaches your server — blocking infected uploads in real time.
 
-1. The user uploads an attachment.
-2. The plugin sends the uploaded file to the attachmentAV API.
-3. The attachmentAV API scans the file for malware by using the Sophos engine.
-4. In the case of an infected file, the plugin blocks the upload.
+= Virus Scan & Malware Protection for Form Plugins =
 
-Also works with the popular file upload plugins [WPForms](https://wordpress.org/plugins/wpforms-lite/), [Formidable Forms](https://wordpress.org/plugins/formidable/), [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/), [Contact Form 7](https://wordpress.org/plugins/contact-form-7/), [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/), and [Gravity Forms](https://gravity.com).
+attachmentAV integrates with the most popular WordPress form and file upload plugins:
+
+* [Contact Form 7](https://wordpress.org/plugins/contact-form-7/) — virus scan and malware protection for Contact Form 7 file uploads
+* [WPForms](https://wordpress.org/plugins/wpforms-lite/) — virus scan and malware protection for WPForms file upload fields
+* [Gravity Forms](https://gravity.com) — virus scan and malware protection for Gravity Forms file upload fields
+* [Formidable Forms](https://wordpress.org/plugins/formidable/) — virus scan and malware protection for Formidable Forms file uploads
+* [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/) — virus scan and malware protection for drag-and-drop file uploads
+* [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/) — virus scan and malware protection for Iptanus File Upload
+* [Media Library](https://wordpress.com/support/media/) — virus scan and malware protection for core WordPress media uploads
+
+= How It Works =
+
+1. A user uploads a file through a form (see supported plugins).
+2. The attachmentAV plugin sends the file to the attachmentAV API.
+3. The attachmentAV API scans the file for malware using the Sophos engine.
+4. Infected files are blocked and an error is shown to the user.
 
 An API key and subscription for the 3rd party service [attachmentAV](https://attachmentav.com/solution/malware-protection-for-wordpress/) are required. To scan user uploads for malware, the plugin sends the files to the API endpoint `https://eu.developer.attachmentav.com/v1/scan/sync/binary`.
 
@@ -47,18 +59,18 @@ The maximum file size is 10 MB.
 
 attachmentAV scans all files uploaded via:
 
-* The core [Media Library](https://wordpress.com/support/media/)
-* The plugin [WPForms](https://wordpress.org/plugins/wpforms-lite/)
-* The plugin [Formidable Forms](https://wordpress.org/plugins/formidable/)
-* The plugin [WordPress File Upload](https://wordpress.org/plugins/wp-file-upload/)
 * The plugin [Contact Form 7](https://wordpress.org/plugins/contact-form-7/)
-* The plugin [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/)
+* The plugin [WPForms](https://wordpress.org/plugins/wpforms-lite/)
 * The plugin [Gravity Forms](https://gravity.com)
+* The plugin [Formidable Forms](https://wordpress.org/plugins/formidable/)
+* The plugin [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/)
+* The plugin [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/)
+* The core [Media Library](https://wordpress.com/support/media/)
 
 == Screenshots ==
 
-1. attachmentAV blocks uploads of infected files.
-2. attachmentAV scan status shown for each media file.
+1. Block uploads of infected files via form plugins.
+2. Configure the attachmentAV plugin to your needs.
 
 == Changelog ==
 
@@ -104,7 +116,7 @@ attachmentAV scans all files uploaded via:
 
 = 1.1.0 =
 * Support for plugin WPForms added
-* Support for plugin WordPress File Upload added
+* Support for plugin Iptanus File Upload added
 
 = 1.0.5 =
 * Adding scan results to metadata

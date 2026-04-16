@@ -1,12 +1,22 @@
-# attachmentAV for Wordpress - Protect blog from viruses, trojans, and other kinds of malware
+# attachmentAV - Virus Scan & Malware Protection for form plugins like Contact Form 7, WPForms, Gravity Forms
 
-Protect your blog from viruses, trojans, and other kinds of malware. The plugin sends all uploads to the attachmentAV API to scan for malware with Sophos and blocks infected files.
+Virus scan and malware protection for Contact Form 7, WPForms, Gravity Forms, Formidable Forms, Iptanus File Upload, and more. Powered by Sophos.
 
 > This plugin requires a subscription and API key: [Get API key](https://attachmentav.com/subscribe/wordpress/)
 
+## Supported Form Plugins
+
+* [Contact Form 7](https://wordpress.org/plugins/contact-form-7/) — virus scan and malware protection for Contact Form 7 file uploads
+* [WPForms](https://wordpress.org/plugins/wpforms-lite/) — virus scan and malware protection for WPForms file upload fields
+* [Gravity Forms](https://gravity.com) — virus scan and malware protection for Gravity Forms file upload fields
+* [Formidable Forms](https://wordpress.org/plugins/formidable/) — virus scan and malware protection for Formidable Forms file uploads
+* [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/) — virus scan and malware protection for drag-and-drop file uploads
+* [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/) — virus scan and malware protection for Iptanus File Upload
+* [Media Library](https://wordpress.com/support/media/) — virus scan and malware protection for core WordPress media uploads
+
 ## Screenshot
 
-The Wordpress plugin scans uploads for viruses, trojans, and other kinds of malware. Infected files are rejected during the upload.
+The WordPress plugin scans file uploads via forms for viruses, trojans, and other kinds of malware. Infected files are blocked and an error is shown to the user.
 
 ![attachmentAV protects from infected uploads](./plugin/assets/screenshot-1.png)
 
