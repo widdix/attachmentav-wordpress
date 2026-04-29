@@ -16,7 +16,7 @@ services:
     ports:
       - 3306:3306
   wordpress:
-    image: wordpress:6.9.1
+    image: wordpress:6.9.4
     ports:
       - 80:80
     restart: always
@@ -32,7 +32,7 @@ services:
       - ./error-logging.ini:/usr/local/etc/php/conf.d/error-logging.ini
       - ./debug.log:/var/www/html/wp-content/debug.log
   phpmyadmin:
-    image: 'phpmyadmin:5.2.2'
+    image: 'phpmyadmin:5.2.3'
     ports:
       - '8081:80'
     depends_on:
