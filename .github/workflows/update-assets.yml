@@ -9,7 +9,7 @@ jobs:
     name: Update README and assets
     runs-on: ['hyperenv', 'medium-eu-west-1']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Copy README.txt to root
       run: |
         cp plugin/README.txt .
