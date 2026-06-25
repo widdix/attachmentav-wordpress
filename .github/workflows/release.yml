@@ -21,7 +21,7 @@ jobs:
         zip -r ../attachmentav.zip .
         cd ..
     - name: Create release including artifact
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         files: attachmentav.zip
     - name: Deploy to Wordpress Plugin Directory
