@@ -1,6 +1,6 @@
 # attachmentAV - Virus Scan & Malware Protection for form plugins like Contact Form 7, WPForms, Gravity Forms
 
-Virus scan and malware protection for Contact Form 7, WPForms, Gravity Forms, Formidable Forms, Iptanus File Upload, and more. Powered by Sophos.
+Virus scan and malware protection for Contact Form 7, WPForms, Gravity Forms, Formidable Forms, Forminator, Iptanus File Upload, and more. Powered by Sophos.
 
 > This plugin requires a subscription and API key: [Get API key](https://attachmentav.com/subscribe/wordpress/)
 
@@ -10,6 +10,7 @@ Virus scan and malware protection for Contact Form 7, WPForms, Gravity Forms, Fo
 * [WPForms](https://wordpress.org/plugins/wpforms-lite/) — virus scan and malware protection for WPForms file upload fields
 * [Gravity Forms](https://gravity.com) — virus scan and malware protection for Gravity Forms file upload fields
 * [Formidable Forms](https://wordpress.org/plugins/formidable/) — virus scan and malware protection for Formidable Forms file uploads
+* [Forminator](https://wordpress.org/plugins/forminator/) — virus scan and malware protection for Forminator file upload fields
 * [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/) — virus scan and malware protection for drag-and-drop file uploads
 * [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/) — virus scan and malware protection for Iptanus File Upload
 * [Media Library](https://wordpress.com/support/media/) — virus scan and malware protection for core WordPress media uploads
