@@ -132,6 +132,12 @@ class Attachmentav_Admin {
 			array( $this, 'sanitize_text' ) // Sanitize
 		);
 
+		register_setting(
+			'attachmentav', // Option group
+			'attachmentav_scan_forminator', // Option name
+			array( $this, 'sanitize_text' ) // Sanitize
+		);
+
 		add_settings_section(
 			'attachmentav_subscription', // ID
 			'Subscription', // Title
@@ -211,10 +217,18 @@ class Attachmentav_Admin {
 
 		add_settings_field(
 			'attachmentav_scan_formidable', // ID
-			'Scan files uploaded with plugin "Formidable Forms"?', // Title 
+			'Scan files uploaded with plugin "Formidable Forms"?', // Title
 			array( $this, 'print_block_scan_formidable' ), // Callback
 			'attachmentav', // Page
-			'attachmentav_plugins' // Section           
+			'attachmentav_plugins' // Section
+		);
+
+		add_settings_field(
+			'attachmentav_scan_forminator', // ID
+			'Scan files uploaded with plugin "Forminator"?', // Title
+			array( $this, 'print_block_scan_forminator' ), // Callback
+			'attachmentav', // Page
+			'attachmentav_plugins' // Section
 		);
 	}
 
@@ -338,6 +352,14 @@ class Attachmentav_Admin {
 
 	public function print_block_scan_formidable() {
 		print('Always active');
+	}
+
+	public function print_block_scan_forminator() {
+		if (get_option('attachmentav_scan_forminator') != 'false') {
+			print('<select name="attachmentav_scan_forminator"><option value="true" selected>Yes</option><option value="false">No</option></select>');
+		} else {
+			print('<select name="attachmentav_scan_forminator"><option value="true">Yes</option><option value="false" selected>No</option></select>');
+		}
 	}
 
 	/** 

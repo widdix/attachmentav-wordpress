@@ -3,7 +3,7 @@ Contributors: andreaswittig,michaelwittig
 Tags: virus scan, malware protection, wpforms, contact form 7, gravity forms
 Requires at least: 6.0
 Tested up to: 6.9.1
-Stable tag: 1.8.0
+Stable tag: 1.9.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,7 @@ attachmentAV integrates with the most popular WordPress form and file upload plu
 * [WPForms](https://wordpress.org/plugins/wpforms-lite/) — virus scan and malware protection for WPForms file upload fields
 * [Gravity Forms](https://gravity.com) — virus scan and malware protection for Gravity Forms file upload fields
 * [Formidable Forms](https://wordpress.org/plugins/formidable/) — virus scan and malware protection for Formidable Forms file uploads
+* [Forminator](https://wordpress.org/plugins/forminator/) — virus scan and malware protection for Forminator file upload fields
 * [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/) — virus scan and malware protection for drag-and-drop file uploads
 * [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/) — virus scan and malware protection for Iptanus File Upload
 * [Media Library](https://wordpress.com/support/media/) — virus scan and malware protection for core WordPress media uploads
@@ -63,6 +64,7 @@ attachmentAV scans all files uploaded via:
 * The plugin [WPForms](https://wordpress.org/plugins/wpforms-lite/)
 * The plugin [Gravity Forms](https://gravity.com)
 * The plugin [Formidable Forms](https://wordpress.org/plugins/formidable/)
+* The plugin [Forminator](https://wordpress.org/plugins/forminator/)
 * The plugin [Drag and Drop Multiple File Upload for Contact Form 7](https://wordpress.org/plugins/drag-and-drop-multiple-file-upload-contact-form-7/)
 * The plugin [Iptanus File Upload](https://wordpress.org/plugins/wp-file-upload/)
 * The core [Media Library](https://wordpress.com/support/media/)
@@ -73,6 +75,9 @@ attachmentAV scans all files uploaded via:
 2. Configure the attachmentAV plugin to your needs.
 
 == Changelog ==
+
+= 1.9.0 =
+* Adding support for Forminator.
 
 = 1.8.0 =
 * Adding support for Gravity Forms.

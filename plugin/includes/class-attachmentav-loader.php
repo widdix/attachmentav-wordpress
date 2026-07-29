@@ -552,5 +552,76 @@ class Attachmentav_Loader {
 		if (get_option('attachmentav_scan_gravityforms') != 'false') {
 			add_filter('gform_validation', 'gform_validation_scan');
 		}
+
+		function attachmentav_forminator_scan_file($file_path, $filename) {
+			if (filesize($file_path) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
+				$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
+				$response = wp_remote_post($endpoint, array(
+					'timeout' => 30,
+					'body'    => file_get_contents($file_path),
+					'headers' => array(
+						'x-api-key' => get_option('attachmentav_api_key'),
+						'x-wordpress-site-url' => get_site_url(),
+						'Content-Type' => 'application/octet-stream',
+					),
+				));
+				if (is_wp_error($response)) {
+					$error_messages = implode(',', $response->get_error_messages());
+					return "attachmentAV: Failed to scan {$filename} for malware ({$error_messages}).";
+				}
+				if ($response['response']['code'] == 200) {
+					$body = json_decode($response['body'], true);
+					if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
+						return "attachmentAV: Could not scan {$filename} (e.g., encrypted files). Upload blocked.";
+					} else if ($body['status'] == 'infected') {
+						return "attachmentAV: {$filename} is infected ({$body['finding']}). Upload blocked.";
+					}
+					return null;
+				} else if ($response['response']['code'] == 401) {
+					return "attachmentAV: Could not scan {$filename} for malware as license key is missing or invalid.";
+				} else if ($response['response']['code'] == 429) {
+					return "attachmentAV: You've reached the maximum number of malware scans.";
+				} else {
+					return "attachmentAV: Failed to scan {$filename} for malware due to unknown error.";
+				}
+			} else {
+				if (get_option('attachmentav_block_unscannable') == 'true') {
+					return "attachmentAV: Could not scan {$filename} as it exceeds the maximum of 10 MB. Upload blocked.";
+				}
+				return null;
+			}
+		}
+		function attachmentav_forminator_submit_errors($submit_errors, $form_id, $field_data_array) {
+			// The filter fires multiple times per submission (validation, upload, and
+			// transfer phase); $scanned prevents scanning the same file twice.
+			static $scanned = array();
+			foreach ($field_data_array as $field) {
+				if (!isset($field['field_type']) || $field['field_type'] !== 'upload') {
+					continue;
+				}
+				if (empty($field['value']['file']['file_path'])) {
+					continue;
+				}
+				$paths = (array) $field['value']['file']['file_path'];
+				foreach ($paths as $path) {
+					if (isset($scanned[$path]) || !file_exists($path)) {
+						continue;
+					}
+					$scanned[$path] = true;
+					// Forminator stores uploads as {12 random chars}-{original name}; strip
+					// the prefix so error messages show the name the user uploaded.
+					$display_name = preg_replace('/^[a-zA-Z0-9]{12}-/', '', basename($path));
+					$error = attachmentav_forminator_scan_file($path, $display_name);
+					if ($error !== null) {
+						wp_delete_file($path);
+						$submit_errors[][$field['name']] = $error;
+					}
+				}
+			}
+			return $submit_errors;
+		}
+		if (get_option('attachmentav_scan_forminator') != 'false') {
+			add_filter('forminator_custom_form_submit_errors', 'attachmentav_forminator_submit_errors', 10, 3);
+		}
 	}
 }
