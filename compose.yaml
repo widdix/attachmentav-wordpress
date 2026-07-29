@@ -16,7 +16,7 @@ services:
     ports:
       - 3306:3306
   wordpress:
-    image: wordpress:6.9.4
+    image: wordpress:7.0.1
     ports:
       - 80:80
     restart: always

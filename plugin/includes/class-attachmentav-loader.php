@@ -387,7 +387,11 @@ class Attachmentav_Loader {
 			return $result;
 		}
 		function wpcf7_validate_file($result, $tag, $additional_data) {
-			foreach ($additional_data['uploaded_files'] as $file) {
+			$uploaded_files = isset($additional_data['uploaded_files']) ? $additional_data['uploaded_files'] : array();
+			if (is_wp_error($uploaded_files)) { // CF7 passes a WP_Error if it already rejected the upload (e.g., disallowed file type)
+				return $result;
+			}
+			foreach ((array) $uploaded_files as $file) {
 				if (filesize($file) <= 10000000) { // Maximum file size for realtime scanning is 10 MB
 					$endpoint = 'https://eu.developer.attachmentav.com/v1/scan/sync/binary';
 					$response = wp_remote_post( $endpoint, array(
