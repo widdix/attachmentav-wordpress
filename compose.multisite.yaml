@@ -1,0 +1,85 @@
+# WordPress Multisite Network (subdirectory mode) for testing the plugin.
+#
+# Runs as a separate compose project ("attachmentav-multisite") with its own
+# volumes, so it does not interfere with the single-site environment from
+# compose.yaml. Both bind to port 80, so stop one before starting the other:
+#
+#   docker compose down                                  # stop single-site env
+#   docker compose -f compose.multisite.yaml up          # start multisite env
+#
+# The wpcli one-shot service installs the network automatically (see
+# multisite-setup.sh). Once it prints "Multisite network is ready", log in at
+# http://localhost/wp-admin/network/ with admin / admin.
+#
+# To reset the multisite database:
+#
+#   docker compose -f compose.multisite.yaml down --volumes
+
+name: attachmentav-multisite
+
+services:
+  db:
+    image: mariadb:10.8.2-focal
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=somewordpress
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+
+  wordpress:
+    image: wordpress:7.0.1
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DEBUG=1
+    volumes:
+      # Multisite needs a shared html volume so the wpcli service can update
+      # wp-config.php and .htaccess during network installation.
+      - wp_data:/var/www/html
+      - ./plugin:/var/www/html/wp-content/plugins/attachmentav
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./error-logging.ini:/usr/local/etc/php/conf.d/error-logging.ini
+
+  wpcli:
+    image: wordpress:cli
+    # The alpine-based cli image runs as uid 82, but the debian-based wordpress
+    # image owns /var/www/html as uid 33. Match it so wp-cli can write
+    # wp-config.php and .htaccess during the multisite installation.
+    user: '33:33'
+    depends_on:
+      - db
+      - wordpress
+    environment:
+      # wp-config.php reads these at runtime, so they must match the wordpress
+      # service. Without them, WP-CLI falls back to the default db host 'mysql'.
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_NAME=wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ./plugin:/var/www/html/wp-content/plugins/attachmentav
+      - ./multisite-setup.sh:/usr/local/bin/multisite-setup.sh:ro
+    command: ['bash', '/usr/local/bin/multisite-setup.sh']
+
+  phpmyadmin:
+    image: 'phpmyadmin:5.2.3'
+    ports:
+      - '8081:80'
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+
+volumes:
+  db_data:
+  wp_data:

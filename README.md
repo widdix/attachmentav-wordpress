@@ -71,6 +71,34 @@ ngrok http http://localhost:80
 
 Inside PHP, use `error_log('log line');` or `error_log(print_r($var, true));` to print debug logs.
 
+### Multisite
+
+A separate compose project spins up a WordPress Multisite Network (subdirectory mode) for testing. It shares port 80 with the single-site environment, so stop one before starting the other.
+
+```
+docker compose down                            # stop the single-site environment
+docker compose -f compose.multisite.yaml up    # start the multisite environment
+```
+
+On first start, the `wpcli` service (see `multisite-setup.sh`) installs the network, writes the multisite `.htaccess` rules, and creates two test subsites. When it finishes, the following URLs are available:
+
+* Network admin: http://localhost/wp-admin/network/ (user: `admin`, password: `admin`)
+* Main site: http://localhost/
+* Subsites: http://localhost/site1/ and http://localhost/site2/
+
+Activate the plugin either network-wide or per subsite (also possible via the admin UI):
+
+```
+docker compose -f compose.multisite.yaml run --rm wpcli wp plugin activate attachmentav --network
+docker compose -f compose.multisite.yaml run --rm wpcli wp plugin activate attachmentav --url=http://localhost/site1
+```
+
+To reset the multisite database and files:
+
+```
+docker compose -f compose.multisite.yaml down --volumes
+```
+
 ### Release
 
 * Modify `plugin/README.md`
