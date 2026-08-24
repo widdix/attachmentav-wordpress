@@ -31,7 +31,7 @@ services:
       - MYSQL_PASSWORD=wordpress
 
   wordpress:
-    image: wordpress:7.0.1
+    image: wordpress:7.1.0
     ports:
       - 80:80
     restart: always
