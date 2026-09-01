@@ -141,26 +141,28 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					$file['error'] = "attachmentAV: Failed to scan uploaded file for malware ({$error_messages}).";
+					/* translators: %s: error message(s) returned by the scan request */
+					$file['error'] = sprintf(__('attachmentAV: Failed to scan uploaded file for malware (%s).', 'attachmentav'), $error_messages);
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
 						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-							$file['error'] = "attachmentAV: Could not scan file (e.g., encrypted files). Upload blocked.";
+							$file['error'] = __('attachmentAV: Could not scan file (e.g., encrypted files). Upload blocked.', 'attachmentav');
 						} else if ($body['status'] == 'infected') {
-							$file['error'] = "attachmentAV: Uploaded file is infected ({$body['finding']}). Upload blocked.";
+							/* translators: %s: name of the malware finding */
+							$file['error'] = sprintf(__('attachmentAV: Uploaded file is infected (%s). Upload blocked.', 'attachmentav'), $body['finding']);
 						}
 					} else if ($response['response']['code'] == 401) {
-						$file['error'] = "attachmentAV: Could not scan uploaded file for malware as license key is missing or invalid.";
+						$file['error'] = __('attachmentAV: Could not scan uploaded file for malware as license key is missing or invalid.', 'attachmentav');
 					} else if ($response['response']['code'] == 429) {
-						$file['error'] = "attachmentAV: You've reached the maximum number of malware scans.";
+						$file['error'] = __("attachmentAV: You've reached the maximum number of malware scans.", 'attachmentav');
 					} else {
-						$file['error'] = "attachmentAV: Failed to scan uploaded file for malware due to unknown error.";
+						$file['error'] = __('attachmentAV: Failed to scan uploaded file for malware due to unknown error.', 'attachmentav');
 					}
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					$file['error'] = "attachmentAV: Could not scan file as it exceeds the maximum of 10 MB. Upload blocked. Go to settings and allow uploading unscannable files.";
+					$file['error'] = __('attachmentAV: Could not scan file as it exceeds the maximum of 10 MB. Upload blocked. Go to settings and allow uploading unscannable files.', 'attachmentav');
 				}
 			}
 			return $file;
@@ -177,7 +179,7 @@ class Attachmentav_Loader {
 
 		function modify_media_meta($media_dims, $post) {
 			$scanResult = get_post_meta( $post->ID, 'attachmentav_scan_result', true );
-			$media_dims .= "<div><strong>attachmentAV Scan Result:</strong> $scanResult</div>";
+			$media_dims .= '<div><strong>' . esc_html__('attachmentAV Scan Result:', 'attachmentav') . "</strong> $scanResult</div>";
 			return $media_dims;
 		}
 		add_filter('media_meta', "modify_media_meta", null, 2);
@@ -271,15 +273,19 @@ class Attachmentav_Loader {
 			wp_delete_file($file);
 			if ($ret['status'] == 'infected') {
 				if (!empty($ret['finding'])) {
-					return 'The file ' . $filename . ' is infected and therefore blocked (' . $ret['finding'] . ')';
+					/* translators: 1: file name, 2: name of the malware finding */
+					return sprintf(__('The file %1$s is infected and therefore blocked (%2$s)', 'attachmentav'), $filename, $ret['finding']);
 				} else {
-					return 'The file ' . $filename . ' is infected and therefore blocked';
+					/* translators: %s: file name */
+					return sprintf(__('The file %s is infected and therefore blocked', 'attachmentav'), $filename);
 				}
 			} else if ($ret['status'] == 'no') {
 				if (!empty($ret['finding'])) {
-					return 'The file ' . $filename . ' is not scannable and therefore blocked (' . $ret['finding'] . ')';
+					/* translators: 1: file name, 2: name of the scan finding */
+					return sprintf(__('The file %1$s is not scannable and therefore blocked (%2$s)', 'attachmentav'), $filename, $ret['finding']);
 				} else {
-					return 'The file ' . $filename . ' is not scannable and therefore blocked';
+					/* translators: %s: file name */
+					return sprintf(__('The file %s is not scannable and therefore blocked', 'attachmentav'), $filename);
 				}
 			} else {
 				return $ret['status'];
@@ -353,26 +359,28 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Failed to scan uploaded file for malware ({$error_messages}).");
+					/* translators: %s: error message(s) returned by the scan request */
+					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], sprintf(__('Failed to scan uploaded file for malware (%s).', 'attachmentav'), $error_messages));
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
 						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan file (e.g., encrypted files). Upload blocked.");
+							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], __('Could not scan file (e.g., encrypted files). Upload blocked.', 'attachmentav'));
 						} else if ($body['status'] == 'infected') {
-							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+							/* translators: %s: name of the malware finding */
+							$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], sprintf(__('Uploaded file is infected (%s). Upload blocked.', 'attachmentav'), $body['finding']));
 						}
 					} else if ($response['response']['code'] == 401) {
-						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan uploaded file for malware as license key is missing or invalid.");
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], __('Could not scan uploaded file for malware as license key is missing or invalid.', 'attachmentav'));
 					} else if ($response['response']['code'] == 429) {
-						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "You've reached the maximum number of malware scans.");
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], __("You've reached the maximum number of malware scans.", 'attachmentav'));
 					} else {
-						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Failed to scan uploaded file for malware due to unknown error.");
+						$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], __('Failed to scan uploaded file for malware due to unknown error.', 'attachmentav'));
 					}
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+					$changable_data = wfu_after_file_loaded_error($wp_filesystem, $changable_data, $additional_data['file_path'], __('Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.', 'attachmentav'));
 				}
 			}
 			return $changable_data;
@@ -405,26 +413,28 @@ class Attachmentav_Loader {
 					));
 					if (is_wp_error($response)) {
 						$error_messages = implode(',', $response->get_error_messages());
-						$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware ({$error_messages}).");
+						/* translators: %s: error message(s) returned by the scan request */
+						$result = wpcf7_validate_file_error($result, $tag, $file, sprintf(__('Failed to scan uploaded file for malware (%s).', 'attachmentav'), $error_messages));
 					} else {
 						if ($response['response']['code'] == 200) {
 							$body = json_decode($response['body'], true);
 							if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-								$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file (e.g., encrypted files). Upload blocked.");
+								$result = wpcf7_validate_file_error($result, $tag, $file, __('Could not scan file (e.g., encrypted files). Upload blocked.', 'attachmentav'));
 							} else if ($body['status'] == 'infected') {
-								$result = wpcf7_validate_file_error($result, $tag, $file, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+								/* translators: %s: name of the malware finding */
+								$result = wpcf7_validate_file_error($result, $tag, $file, sprintf(__('Uploaded file is infected (%s). Upload blocked.', 'attachmentav'), $body['finding']));
 							}
 						} else if ($response['response']['code'] == 401) {
-							$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan uploaded file for malware as license key is missing or invalid.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, __('Could not scan uploaded file for malware as license key is missing or invalid.', 'attachmentav'));
 						} else if ($response['response']['code'] == 429) {
-							$result = wpcf7_validate_file_error($result, $tag, $file, "You've reached the maximum number of malware scans.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, __("You've reached the maximum number of malware scans.", 'attachmentav'));
 						} else {
-							$result = wpcf7_validate_file_error($result, $tag, $file, "Failed to scan uploaded file for malware due to unknown error.");
+							$result = wpcf7_validate_file_error($result, $tag, $file, __('Failed to scan uploaded file for malware due to unknown error.', 'attachmentav'));
 						}
 					}
 				} else {
 					if (get_option('attachmentav_block_unscannable') == 'true') {
-						$result = wpcf7_validate_file_error($result, $tag, $file, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+						$result = wpcf7_validate_file_error($result, $tag, $file, __('Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.', 'attachmentav'));
 					}
 				}
 			}
@@ -448,26 +458,28 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					wpcf7_upload_file_name_custom_error($file, "Failed to scan uploaded file for malware ({$error_messages}).");
+					/* translators: %s: error message(s) returned by the scan request */
+					wpcf7_upload_file_name_custom_error($file, sprintf(__('Failed to scan uploaded file for malware (%s).', 'attachmentav'), $error_messages));
 				} else {
 					if ($response['response']['code'] == 200) {
 						$body = json_decode($response['body'], true);
 						if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-							wpcf7_upload_file_name_custom_error($file, "Could not scan file (e.g., encrypted files). Upload blocked.");
+							wpcf7_upload_file_name_custom_error($file, __('Could not scan file (e.g., encrypted files). Upload blocked.', 'attachmentav'));
 						} else if ($body['status'] == 'infected') {
-							wpcf7_upload_file_name_custom_error($file, "Uploaded file is infected ({$body['finding']}). Upload blocked.");
+							/* translators: %s: name of the malware finding */
+							wpcf7_upload_file_name_custom_error($file, sprintf(__('Uploaded file is infected (%s). Upload blocked.', 'attachmentav'), $body['finding']));
 						}
 					} else if ($response['response']['code'] == 401) {
-						wpcf7_upload_file_name_custom_error($file, "Could not scan uploaded file for malware as license key is missing or invalid.");
+						wpcf7_upload_file_name_custom_error($file, __('Could not scan uploaded file for malware as license key is missing or invalid.', 'attachmentav'));
 					} else if ($response['response']['code'] == 429) {
-						wpcf7_upload_file_name_custom_error($file, "You've reached the maximum number of malware scans.");
+						wpcf7_upload_file_name_custom_error($file, __("You've reached the maximum number of malware scans.", 'attachmentav'));
 					} else {
-						wpcf7_upload_file_name_custom_error($file, "Failed to scan uploaded file for malware due to unknown error.");
+						wpcf7_upload_file_name_custom_error($file, __('Failed to scan uploaded file for malware due to unknown error.', 'attachmentav'));
 					}
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					wpcf7_upload_file_name_custom_error($file, "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.");
+					wpcf7_upload_file_name_custom_error($file, __('Could not scan file as it exceeds the maximum of 10 MB. Upload blocked.', 'attachmentav'));
 				}
 			}
 		}
@@ -491,26 +503,32 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					return "attachmentAV: Failed to scan {$filename} for malware ({$error_messages}).";
+					/* translators: 1: file name, 2: error message(s) returned by the scan request */
+					return sprintf(__('attachmentAV: Failed to scan %1$s for malware (%2$s).', 'attachmentav'), $filename, $error_messages);
 				}
 				if ($response['response']['code'] == 200) {
 					$body = json_decode($response['body'], true);
 					if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-						return "attachmentAV: Could not scan {$filename} (e.g., encrypted files). Upload blocked.";
+						/* translators: %s: file name */
+						return sprintf(__('attachmentAV: Could not scan %s (e.g., encrypted files). Upload blocked.', 'attachmentav'), $filename);
 					} else if ($body['status'] == 'infected') {
-						return "attachmentAV: {$filename} is infected ({$body['finding']}). Upload blocked.";
+						/* translators: 1: file name, 2: name of the malware finding */
+						return sprintf(__('attachmentAV: %1$s is infected (%2$s). Upload blocked.', 'attachmentav'), $filename, $body['finding']);
 					}
 					return null;
 				} else if ($response['response']['code'] == 401) {
-					return "attachmentAV: Could not scan {$filename} for malware as license key is missing or invalid.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Could not scan %s for malware as license key is missing or invalid.', 'attachmentav'), $filename);
 				} else if ($response['response']['code'] == 429) {
-					return "attachmentAV: You've reached the maximum number of malware scans.";
+					return __("attachmentAV: You've reached the maximum number of malware scans.", 'attachmentav');
 				} else {
-					return "attachmentAV: Failed to scan {$filename} for malware due to unknown error.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Failed to scan %s for malware due to unknown error.', 'attachmentav'), $filename);
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					return "attachmentAV: Could not scan {$filename} as it exceeds the maximum of 10 MB. Upload blocked.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Could not scan %s as it exceeds the maximum of 10 MB. Upload blocked.', 'attachmentav'), $filename);
 				}
 				return null;
 			}
@@ -571,26 +589,32 @@ class Attachmentav_Loader {
 				));
 				if (is_wp_error($response)) {
 					$error_messages = implode(',', $response->get_error_messages());
-					return "attachmentAV: Failed to scan {$filename} for malware ({$error_messages}).";
+					/* translators: 1: file name, 2: error message(s) returned by the scan request */
+					return sprintf(__('attachmentAV: Failed to scan %1$s for malware (%2$s).', 'attachmentav'), $filename, $error_messages);
 				}
 				if ($response['response']['code'] == 200) {
 					$body = json_decode($response['body'], true);
 					if ($body['status'] == 'no' && get_option('attachmentav_block_unscannable') == 'true') {
-						return "attachmentAV: Could not scan {$filename} (e.g., encrypted files). Upload blocked.";
+						/* translators: %s: file name */
+						return sprintf(__('attachmentAV: Could not scan %s (e.g., encrypted files). Upload blocked.', 'attachmentav'), $filename);
 					} else if ($body['status'] == 'infected') {
-						return "attachmentAV: {$filename} is infected ({$body['finding']}). Upload blocked.";
+						/* translators: 1: file name, 2: name of the malware finding */
+						return sprintf(__('attachmentAV: %1$s is infected (%2$s). Upload blocked.', 'attachmentav'), $filename, $body['finding']);
 					}
 					return null;
 				} else if ($response['response']['code'] == 401) {
-					return "attachmentAV: Could not scan {$filename} for malware as license key is missing or invalid.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Could not scan %s for malware as license key is missing or invalid.', 'attachmentav'), $filename);
 				} else if ($response['response']['code'] == 429) {
-					return "attachmentAV: You've reached the maximum number of malware scans.";
+					return __("attachmentAV: You've reached the maximum number of malware scans.", 'attachmentav');
 				} else {
-					return "attachmentAV: Failed to scan {$filename} for malware due to unknown error.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Failed to scan %s for malware due to unknown error.', 'attachmentav'), $filename);
 				}
 			} else {
 				if (get_option('attachmentav_block_unscannable') == 'true') {
-					return "attachmentAV: Could not scan {$filename} as it exceeds the maximum of 10 MB. Upload blocked.";
+					/* translators: %s: file name */
+					return sprintf(__('attachmentAV: Could not scan %s as it exceeds the maximum of 10 MB. Upload blocked.', 'attachmentav'), $filename);
 				}
 				return null;
 			}

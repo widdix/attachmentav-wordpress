@@ -4,101 +4,103 @@ msgid ""
 msgstr ""
 "Project-Id-Version: attachmentAV 1.9.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/plugin\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: widdix GmbH <hello@attachmentav.com>\n"
+"Language-Team: German <hello@attachmentav.com>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "POT-Creation-Date: 2026-09-01T17:49:18+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2026-09-01T18:00:00+00:00\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: attachmentav\n"
 
 #. Plugin Name of the plugin
 #: attachmentav.php
 msgid "attachmentAV"
-msgstr ""
+msgstr "attachmentAV"
 
 #. Plugin URI of the plugin
 #: attachmentav.php
 msgid "https://attachmentav.com/solution/malware-protection-for-wordpress/"
-msgstr ""
+msgstr "https://attachmentav.com/solution/malware-protection-for-wordpress/"
 
 #. Description of the plugin
 #: attachmentav.php
 msgid "Protect your blog from malware. Scan attachments for viruses, worms, and trojans by sending them to the attachmentAV API powered by Sophos. To get started, please go to your <a href=\"/wp-admin/admin.php?page=attachmentav\">attachmentAV Settings page</a> to set up your API key."
-msgstr ""
+msgstr "Schützt das Blog vor Malware. Anhänge werden auf Viren, Würmer und Trojaner geprüft, indem sie an die attachmentAV API (powered by Sophos) gesendet werden. Zum Einstieg auf der <a href=\"/wp-admin/admin.php?page=attachmentav\">attachmentAV-Einstellungsseite</a> den API-Schlüssel hinterlegen."
 
 #. Author of the plugin
 #: attachmentav.php
 msgid "widdix GmbH"
-msgstr ""
+msgstr "widdix GmbH"
 
 #. translators: %s: error message(s) returned by the scan request
 #: includes/class-attachmentav-loader.php:145
 #, php-format
 msgid "attachmentAV: Failed to scan uploaded file for malware (%s)."
-msgstr ""
+msgstr "attachmentAV: Die hochgeladene Datei konnte nicht auf Malware geprüft werden (%s)."
 
 #: includes/class-attachmentav-loader.php:150
 msgid "attachmentAV: Could not scan file (e.g., encrypted files). Upload blocked."
-msgstr ""
+msgstr "attachmentAV: Die Datei konnte nicht geprüft werden (z. B. verschlüsselte Dateien). Upload blockiert."
 
 #. translators: %s: name of the malware finding
 #: includes/class-attachmentav-loader.php:153
 #, php-format
 msgid "attachmentAV: Uploaded file is infected (%s). Upload blocked."
-msgstr ""
+msgstr "attachmentAV: Die hochgeladene Datei ist infiziert (%s). Upload blockiert."
 
 #: includes/class-attachmentav-loader.php:156
 msgid "attachmentAV: Could not scan uploaded file for malware as license key is missing or invalid."
-msgstr ""
+msgstr "attachmentAV: Die hochgeladene Datei konnte nicht auf Malware geprüft werden, da der Lizenzschlüssel fehlt oder ungültig ist."
 
 #: includes/class-attachmentav-loader.php:158
 #: includes/class-attachmentav-loader.php:523
 #: includes/class-attachmentav-loader.php:609
 msgid "attachmentAV: You've reached the maximum number of malware scans."
-msgstr ""
+msgstr "attachmentAV: Die maximale Anzahl an Malware-Scans ist erreicht."
 
 #: includes/class-attachmentav-loader.php:160
 msgid "attachmentAV: Failed to scan uploaded file for malware due to unknown error."
-msgstr ""
+msgstr "attachmentAV: Die hochgeladene Datei konnte aufgrund eines unbekannten Fehlers nicht auf Malware geprüft werden."
 
 #: includes/class-attachmentav-loader.php:165
 msgid "attachmentAV: Could not scan file as it exceeds the maximum of 10 MB. Upload blocked. Go to settings and allow uploading unscannable files."
-msgstr ""
+msgstr "attachmentAV: Die Datei konnte nicht geprüft werden, da sie das Maximum von 10 MB überschreitet. Upload blockiert. In den Einstellungen kann das Hochladen nicht prüfbarer Dateien erlaubt werden."
 
 #: includes/class-attachmentav-loader.php:174
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #: includes/class-attachmentav-loader.php:182
 msgid "attachmentAV Scan Result:"
-msgstr ""
+msgstr "attachmentAV-Scan-Ergebnis:"
 
 #. translators: 1: file name, 2: name of the malware finding
 #: includes/class-attachmentav-loader.php:277
 #, php-format
 msgid "The file %1$s is infected and therefore blocked (%2$s)"
-msgstr ""
+msgstr "Die Datei %1$s ist infiziert und wird daher blockiert (%2$s)"
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:280
 #, php-format
 msgid "The file %s is infected and therefore blocked"
-msgstr ""
+msgstr "Die Datei %s ist infiziert und wird daher blockiert"
 
 #. translators: 1: file name, 2: name of the scan finding
 #: includes/class-attachmentav-loader.php:285
 #, php-format
 msgid "The file %1$s is not scannable and therefore blocked (%2$s)"
-msgstr ""
+msgstr "Die Datei %1$s kann nicht geprüft werden und wird daher blockiert (%2$s)"
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:288
 #, php-format
 msgid "The file %s is not scannable and therefore blocked"
-msgstr ""
+msgstr "Die Datei %s kann nicht geprüft werden und wird daher blockiert"
 
 #. translators: %s: error message(s) returned by the scan request
 #: includes/class-attachmentav-loader.php:363
@@ -106,13 +108,13 @@ msgstr ""
 #: includes/class-attachmentav-loader.php:462
 #, php-format
 msgid "Failed to scan uploaded file for malware (%s)."
-msgstr ""
+msgstr "Die hochgeladene Datei konnte nicht auf Malware geprüft werden (%s)."
 
 #: includes/class-attachmentav-loader.php:368
 #: includes/class-attachmentav-loader.php:422
 #: includes/class-attachmentav-loader.php:467
 msgid "Could not scan file (e.g., encrypted files). Upload blocked."
-msgstr ""
+msgstr "Die Datei konnte nicht geprüft werden (z. B. verschlüsselte Dateien). Upload blockiert."
 
 #. translators: %s: name of the malware finding
 #: includes/class-attachmentav-loader.php:371
@@ -120,70 +122,70 @@ msgstr ""
 #: includes/class-attachmentav-loader.php:470
 #, php-format
 msgid "Uploaded file is infected (%s). Upload blocked."
-msgstr ""
+msgstr "Die hochgeladene Datei ist infiziert (%s). Upload blockiert."
 
 #: includes/class-attachmentav-loader.php:374
 #: includes/class-attachmentav-loader.php:428
 #: includes/class-attachmentav-loader.php:473
 msgid "Could not scan uploaded file for malware as license key is missing or invalid."
-msgstr ""
+msgstr "Die hochgeladene Datei konnte nicht auf Malware geprüft werden, da der Lizenzschlüssel fehlt oder ungültig ist."
 
 #: includes/class-attachmentav-loader.php:376
 #: includes/class-attachmentav-loader.php:430
 #: includes/class-attachmentav-loader.php:475
 msgid "You've reached the maximum number of malware scans."
-msgstr ""
+msgstr "Die maximale Anzahl an Malware-Scans ist erreicht."
 
 #: includes/class-attachmentav-loader.php:378
 #: includes/class-attachmentav-loader.php:432
 #: includes/class-attachmentav-loader.php:477
 msgid "Failed to scan uploaded file for malware due to unknown error."
-msgstr ""
+msgstr "Die hochgeladene Datei konnte aufgrund eines unbekannten Fehlers nicht auf Malware geprüft werden."
 
 #: includes/class-attachmentav-loader.php:383
 #: includes/class-attachmentav-loader.php:437
 #: includes/class-attachmentav-loader.php:482
 msgid "Could not scan file as it exceeds the maximum of 10 MB. Upload blocked."
-msgstr ""
+msgstr "Die Datei konnte nicht geprüft werden, da sie das Maximum von 10 MB überschreitet. Upload blockiert."
 
 #. translators: 1: file name, 2: error message(s) returned by the scan request
 #: includes/class-attachmentav-loader.php:507
 #: includes/class-attachmentav-loader.php:593
 #, php-format
 msgid "attachmentAV: Failed to scan %1$s for malware (%2$s)."
-msgstr ""
+msgstr "attachmentAV: %1$s konnte nicht auf Malware geprüft werden (%2$s)."
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:513
 #: includes/class-attachmentav-loader.php:599
 #, php-format
 msgid "attachmentAV: Could not scan %s (e.g., encrypted files). Upload blocked."
-msgstr ""
+msgstr "attachmentAV: %s konnte nicht geprüft werden (z. B. verschlüsselte Dateien). Upload blockiert."
 
 #. translators: 1: file name, 2: name of the malware finding
 #: includes/class-attachmentav-loader.php:516
 #: includes/class-attachmentav-loader.php:602
 #, php-format
 msgid "attachmentAV: %1$s is infected (%2$s). Upload blocked."
-msgstr ""
+msgstr "attachmentAV: %1$s ist infiziert (%2$s). Upload blockiert."
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:521
 #: includes/class-attachmentav-loader.php:607
 #, php-format
 msgid "attachmentAV: Could not scan %s for malware as license key is missing or invalid."
-msgstr ""
+msgstr "attachmentAV: %s konnte nicht auf Malware geprüft werden, da der Lizenzschlüssel fehlt oder ungültig ist."
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:526
 #: includes/class-attachmentav-loader.php:612
 #, php-format
 msgid "attachmentAV: Failed to scan %s for malware due to unknown error."
-msgstr ""
+msgstr "attachmentAV: %s konnte aufgrund eines unbekannten Fehlers nicht auf Malware geprüft werden."
 
 #. translators: %s: file name
 #: includes/class-attachmentav-loader.php:531
 #: includes/class-attachmentav-loader.php:617
 #, php-format
 msgid "attachmentAV: Could not scan %s as it exceeds the maximum of 10 MB. Upload blocked."
-msgstr ""
+msgstr "attachmentAV: %s konnte nicht geprüft werden, da die Datei das Maximum von 10 MB überschreitet. Upload blockiert."
