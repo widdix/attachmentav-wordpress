@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: attachmentAV 1.9.1\n"
+"Project-Id-Version: attachmentAV 1.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/plugin\n"
 "Last-Translator: widdix GmbH <hello@attachmentav.com>\n"
 "Language-Team: German <hello@attachmentav.com>\n"
